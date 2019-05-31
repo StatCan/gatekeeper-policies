@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: K8sBannedImageTags
+metadata:
+  name: ban-latest-tag
+  labels:
+    owner: william.hearn.canada.ca
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    tags:
+      - "latest"

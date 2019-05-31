@@ -1,0 +1,13 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: K8sIngressHost
+metadata:
+  name: ingress-host
+spec:
+  match:
+    kinds:
+      - apiGroups: ["networking.k8s.io"]
+        kinds: ["Ingress"]
+  parameters:
+    message: "All ingress must have an `domain` label that points to your ingress fqdn"
+    hosts:
+      - "^[a-zA-Z]+(.(devtest|innovation))?.cloud.statcan.ca$"

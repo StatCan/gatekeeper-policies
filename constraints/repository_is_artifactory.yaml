@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1alpha1
+kind: K8sAllowedRepos
+metadata:
+  name: repository-is-artifactory
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "production"
+  parameters:
+    repos:
+      - "artifactory.cloud.statcan.ca"
