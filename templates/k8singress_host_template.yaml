@@ -34,7 +34,7 @@ spec:
           msg := constraint.spec.parameters.message
         }
 
-        deny[{"msg": msg}] {
+        violation[{"msg": msg}] {
           value := input.review.object.spec.rules[_].host
           expected := input.constraint.spec.parameters.hosts[_]
           # do not match if allowedRegex is not defined, or is an empty string

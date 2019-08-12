@@ -15,7 +15,7 @@ spec:
       rego: |
         package k8sprivilegedpod
 
-        deny[{"msg": msg}] {
+        violation[{"msg": msg}] {
             input.request.kind.kind = "Deployment"
             input.request.operation = "CREATE"
             servicetype = input.request.kind.kind
