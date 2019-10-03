@@ -1,7 +1,7 @@
 apiVersion: templates.gatekeeper.sh/v1alpha1
 kind: ConstraintTemplate
 metadata:
-  name: k8suniqueserviceselectors
+  name: k8suniqueserviceselector
 spec:
   crd:
     spec:

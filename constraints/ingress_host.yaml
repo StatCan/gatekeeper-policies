@@ -10,4 +10,4 @@ spec:
   parameters:
     message: "All ingress must have an `domain` label that points to your ingress fqdn"
     hosts:
-      - "^[a-zA-Z]+(.(devtest|innovation))?.cloud.statcan.ca$"
+      - "^[a-zA-Z]+(\\.dev)?\\.cloud\\.statcan\\.ca$"
