@@ -1,4 +1,0 @@
-apiVersion: constraints.gatekeeper.sh/v1alpha1
-kind: K8sReadinessProbe
-metadata:
-  name: readiness-probe

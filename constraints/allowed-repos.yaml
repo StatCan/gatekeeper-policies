@@ -1,0 +1,87 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedRepositories
+metadata:
+  name: restrict-repositories
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    repos:
+      # StatCan Repository
+      - 'k8scc01covidacr.azurecr.io/'
+      - 'statcan/'
+
+      # Base containers
+      - 'alpine:'
+      - 'library/alpine'
+      - 'bash:'
+      - 'library/bash'
+      - 'python:'
+      - 'library/python'
+      - 'sha256:'
+      - 'library/sha256'
+      - 'busybox:'
+      - 'library/busybox'
+
+      # Istio
+      - 'istio/'
+      - 'docker.io/istio/'
+      - 'quay.io/kiali/'
+
+      # Elastic
+      - 'docker.elastic.co/'
+
+      # Prometheus + Grafana
+      - 'prom/'
+      - 'docker.io/prom/'
+      - 'grafana/'
+      - 'kiwigrid/k8s-sidecar'
+      - 'quay.io/coreos/'
+      - 'quay.io/prometheus/'
+
+      # Cert manager
+      - 'quay.io/jetstack/'
+
+      # Open Policy Agent
+      - 'quay.io/open-policy-agent/'
+
+      # Helm (Tiller)
+      - 'gcr.io/kubernetes-helm/'
+
+      # Velero
+      - 'gcr.io/heptio-images/'
+
+      # Kubeflow
+      - 'argoproj/'
+      - 'seldonio/'
+      - 'docker.io/seldonio/'
+      - 'gcr.io/google_containers/'
+      - 'gcr.io/kf-pipeline-contrib/'
+      - 'gcr.io/kfserving/'
+      - 'gcr.io/knative-releases/'
+      - 'gcr.io/kubebuilder/'
+      - 'gcr.io/kubeflow-images-public/'
+      - 'gcr.io/ml-pipeline/'
+      - 'gcr.io/spark-operator/'
+      - 'gcr.io/tfx-oss-public/'
+      - 'google/cloud-sdk'
+      - 'metacontroller/'
+      - 'tensorflow/'
+
+      # Data
+      - 'minio/'
+      - 'mysql:'
+      - 'bitnami/postgresql'
+
+      # Web servers
+      - 'nginx:'
+
+      # AKS
+      - 'deis/hcp-tunnel-front'
+      - 'mcr.microsoft.com/'
+      - 'nvidia/'
+
+      # Utilities
+      - 'zachomedia/kubernetes-sidecar-terminator'

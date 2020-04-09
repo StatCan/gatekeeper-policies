@@ -1,4 +1,0 @@
-apiVersion: constraints.gatekeeper.sh/v1alpha1
-kind: K8sPrivilegedPod
-metadata:
-  name: privileged-pod
