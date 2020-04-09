@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: AllowedRepositories
 metadata:
-  name: restrict-repositories
+  name: allowed-repositories
 spec:
   match:
     kinds:
