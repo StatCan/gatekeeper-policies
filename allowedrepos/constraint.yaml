@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: AllowedRepositories
 metadata:
-  name: allowed-repositories
+  name: restrict-repositories
 spec:
   match:
     kinds:
@@ -46,6 +46,10 @@ spec:
 
       # Open Policy Agent
       - 'quay.io/open-policy-agent/'
+      - 'openpolicyagent/opa'
+
+      # Pachyderm
+      - 'pachyderm/'
 
       # Helm (Tiller)
       - 'gcr.io/kubernetes-helm/'
@@ -70,10 +74,21 @@ spec:
       - 'metacontroller/'
       - 'tensorflow/'
 
+      # Volcano
+      - 'docker.io/volcanosh/'
+      - 'volcanosh/'
+
       # Data
       - 'minio/'
       - 'mysql:'
       - 'bitnami/postgresql'
+      - 'bitnami/minideb'
+      - 'docker.io/bitnami/postgresql'
+      - 'docker.io/bitnami/minideb'
+
+      # Dremio
+      - 'dremio/'
+      - 'k8s.gcr.io/kubernetes-zookeeper'
 
       # Web servers
       - 'nginx:'
