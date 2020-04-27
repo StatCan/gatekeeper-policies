@@ -99,4 +99,5 @@ spec:
       - 'nvidia/'
 
       # Utilities
+      - 'zachomedia/etcd'
       - 'zachomedia/kubernetes-sidecar-terminator'
