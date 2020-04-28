@@ -48,6 +48,9 @@ spec:
       - 'quay.io/open-policy-agent/'
       - 'openpolicyagent/opa'
 
+      # Hashicorp
+      - 'hashicorp/'
+
       # Pachyderm
       - 'pachyderm/'
 
