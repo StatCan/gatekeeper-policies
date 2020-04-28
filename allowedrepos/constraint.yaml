@@ -49,6 +49,7 @@ spec:
       - 'openpolicyagent/opa'
 
       # Hashicorp
+      - 'vault:'
       - 'hashicorp/'
 
       # Pachyderm
@@ -102,5 +103,6 @@ spec:
       - 'nvidia/'
 
       # Utilities
+      - 'zachomedia/minio'
       - 'zachomedia/etcd'
       - 'zachomedia/kubernetes-sidecar-terminator'
