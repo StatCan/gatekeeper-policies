@@ -61,6 +61,10 @@ spec:
       # Velero
       - 'gcr.io/heptio-images/'
 
+      # Kubecost
+      - 'gcr.io/kubecost1/'
+      - 'jimmidyson/configmap-reload:'
+
       # Kubeflow
       - 'argoproj/'
       - 'seldonio/'
