@@ -33,6 +33,10 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f allowedrepos/template.yaml -f allowedrepos/constraint.yaml
 
+    # Wait 5 seconds for the constraint template to apply
+    - run: |
+        sleep 5
+
     # Apply manifests for uniqueingresshost
     - name: kubectl
       uses: statcan/actions/kubectl@master
