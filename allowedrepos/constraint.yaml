@@ -107,6 +107,9 @@ spec:
       - 'mcr.microsoft.com/'
       - 'nvidia/'
 
+      # Velero
+      - 'velero'
+
       # Utilities
       - 'zachomedia/minio'
       - 'zachomedia/etcd'
