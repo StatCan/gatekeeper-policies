@@ -26,6 +26,10 @@ jobs:
     steps:
     - uses: actions/checkout@master
 
+    ############
+    # GATEKEEPER
+    ############
+
     # Run the Deployment fo GateKeeper
     - name: kubectl
       uses: statcan/actions/kubectl@master
@@ -33,9 +37,13 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f deploy/gatekeeper.yaml
 
-    # Wait 5 seconds for the constraint template to apply
+    # Wait 5 seconds for the Operator to deploy
     - run: |
         sleep 5
+
+    ###############
+    # ALLOWEDREPOS
+    ###############
 
     # Apply manifests for allowedrepos
     - name: kubectl
@@ -54,6 +62,22 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f allowedrepos/constraint.yaml
+
+
+    ###################
+    # UNIQUEINGRESSHOST
+    ###################
+
+    # Apply manifests for uniqueingresshost
+    - name: kubectl
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f uniqueingresshost/sync.yaml
+
+    # Wait 5 seconds for the constraint template to apply
+    - run: |
+        sleep 5
 
     # Apply manifests for uniqueingresshost
     - name: kubectl
