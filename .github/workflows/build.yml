@@ -123,6 +123,13 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f service-mesh/peer-authentication/constraint.yaml
 
+    # Apply constraint for port-naming
+    - name: kubectl
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f service-mesh/port-naming/constraint.yaml
+
     # Apply constraint for traffic-policy
     - name: kubectl
       uses: statcan/actions/kubectl@master

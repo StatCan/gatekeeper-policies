@@ -22,4 +22,5 @@ kind: Kustomization
 # etc. that differ from the common base).
 bases:
   - peer-authentication
+  - port-naming
   - traffic-policy

@@ -1,0 +1,33 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: allowedserviceportname
+spec:
+  crd:
+    spec:
+      names:
+        kind: AllowedServicePortName
+      validation:
+        openAPIV3Schema:
+          properties:
+            prefixes:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package allowedserviceportname
+
+        violation[{"msg": msg}] {
+          service := input.review.object
+          port := service.spec.ports[_]
+          prefixes := input.parameters.prefixes
+          not is_prefixed(port, prefixes)
+          msg := "service port name missing prefix"
+        }
+
+        is_prefixed(port, prefixes) {
+          prefix := prefixes[_]
+          startswith(port.name, prefix)
+        }

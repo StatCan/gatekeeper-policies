@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: AllowedServicePortName
+metadata:
+  name: port-name-constraint
+spec:
+  enforcementAction: dryrun
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Service"]
+    namespaceSelector:
+      matchExpressions:
+        - key: istio-injection
+          operator: In
+          values: ["enabled"]
+  parameters:
+    prefixes: ["http-", "http2-", "grpc-", "mongo-", "redis-", "tcp-"]
