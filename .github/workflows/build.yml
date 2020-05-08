@@ -35,7 +35,7 @@ jobs:
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f deploy/gatekeeper.yaml
+        args: apply -f crd/gatekeeper.yaml
 
     # Wait 5 seconds for the Operator to deploy
     - run: |
