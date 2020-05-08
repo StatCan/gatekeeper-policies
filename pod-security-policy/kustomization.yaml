@@ -24,4 +24,5 @@ bases:
   - flexvolume-drivers
   - forbidden-sysctls
   - host-namespaces
+  - host-network-ports
   - proc-mount

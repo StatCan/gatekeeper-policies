@@ -102,16 +102,16 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/host-namespaces/constraint.yaml
 
+    # Apply constraint for host-network-ports
+    - name: kubectl
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/host-network-ports/constraint.yaml
+
     # Apply constraint for proc-mount
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/proc-mount/constraint.yaml
-
-    # Apply constraint for seccomp
-    - name: kubectl
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f pod-security-policy/seccomp/constraint.yaml
