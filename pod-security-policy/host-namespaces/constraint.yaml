@@ -4,7 +4,7 @@ metadata:
   name: psp-host-namespace
 spec:
   match:
-    excludedNamespaces: ["kube-system"]
+    excludedNamespaces: ["kubecost", "kube-system", "monitoring"]
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
