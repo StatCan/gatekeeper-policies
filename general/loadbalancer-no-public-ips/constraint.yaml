@@ -4,7 +4,7 @@ metadata:
   name: loadbalancer-no-public-ips
 spec:
   match:
-    excludedNamespaces: istio-system
+    excludedNamespaces: "istio-system"
     kinds:
       - apiGroups: [""]
         kinds: ["Service"]
