@@ -6,6 +6,15 @@ metadata:
 spec:
   sync:
     syncOnly:
+      - group: ""
+        version: "v1"
+        kind: "Namespace"
+      - group: ""
+        version: "v1"
+        kind: "Pod"
+      - group: ""
+        version: "v1"
+        kind: "Service"
       - group: "extensions"
         version: "v1beta1"
         kind: "Ingress"

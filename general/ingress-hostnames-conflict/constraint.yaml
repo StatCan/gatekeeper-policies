@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: UniqueIngressHost
+kind: IngressHostnamesConflict
 metadata:
-  name: unique-ingress-host
+  name: ingress-hostnames-conflict
 spec:
   match:
     kinds:

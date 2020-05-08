@@ -35,64 +35,48 @@ jobs:
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f deploy/gatekeeper.yaml
+        args: apply -f crd/gatekeeper.yaml
 
     # Wait 5 seconds for the Operator to deploy
     - run: |
         sleep 5
 
-    ###############
-    # ALLOWEDREPOS
-    ###############
+    #######################
+    # CONSTRAINTS TEMPLATES
+    #######################
 
-    # Apply manifests for allowedrepos
-    - name: kubectl
+    # Apply all of the contraint templates
+    - name: kustomize
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f allowedrepos/template.yaml
+        args: apply -k .
 
-    # Wait 5 seconds for the constraint template to apply
+    # Wait 5 seconds for the constraint templates to apply
     - run: |
         sleep 5
 
-    # Apply manifests for allowedrepos
+    #############
+    # CONSTRAINTS
+    #############
+
+    # Apply constraint for container-allowed-images
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f allowedrepos/constraint.yaml
+        args: apply -f general/container-allowed-images/constraint.yaml
 
-
-    ###################
-    # UNIQUEINGRESSHOST
-    ###################
-
-    # Apply manifests for uniqueingresshost
+    # Apply constraint for ingress-hostnames-conflict
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f uniqueingresshost/sync.yaml
+        args: apply -f general/ingress-hostnames-conflict/constraint.yaml
 
-    # Wait 5 seconds for the constraint template to apply
-    - run: |
-        sleep 5
-
-    # Apply manifests for uniqueingresshost
+    # Apply constraint for loadbalancer-no-public-ips
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f uniqueingresshost/template.yaml
-
-    # Wait 5 seconds for the constraint template to apply
-    - run: |
-        sleep 5
-
-    # Apply manifests for uniqueingresshost
-    - name: kubectl
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f uniqueingresshost/constraint.yaml
+        args: apply -f general/loadbalancer-no-public-ips/constraint.yaml
