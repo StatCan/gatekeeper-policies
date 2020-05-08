@@ -60,21 +60,21 @@ jobs:
     # CONSTRAINTS
     #############
 
-    # Apply constraints for container-allowed-images
+    # Apply constraint for container-allowed-images
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/container-allowed-images/constraint.yaml
 
-    # Apply constraints for ingress-hostnames-conflict
+    # Apply constraint for ingress-hostnames-conflict
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/ingress-hostnames-conflict/constraint.yaml
 
-    # Apply constraints for loadbalancer-no-public-ips
+    # Apply constraint for loadbalancer-no-public-ips
     - name: kubectl
       uses: statcan/actions/kubectl@master
       with:
