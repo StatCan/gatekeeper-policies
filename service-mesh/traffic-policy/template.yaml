@@ -1,0 +1,35 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: destinationruletlsenabled
+spec:
+  crd:
+    spec:
+      names:
+        kind: DestinationRuleTLSEnabled
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package destinationruletlsenabled
+
+        # spec.trafficPolicy.tls.mode == DISABLE
+        violation[{"msg": msg}] {
+          d := input.review.object
+          d.apiVersion == "networking.istio.io/v1alpha3"
+          d.kind == "DestinationRule"
+          tpl := d.spec["trafficPolicy"][_]
+          tpl == {"mode": "DISABLE"}
+          msg := sprintf("spec.trafficPolicy.tls.mode == DISABLE for host(s): %v", [d.spec.host])
+        }
+
+        # spec.subsets[].trafficPolicy.tls.mode == DISABLE
+        violation[{"msg":msg}] {
+          d := input.review.object
+          d.apiVersion == "networking.istio.io/v1alpha3"
+          d.kind == "DestinationRule"
+
+          subset := d.spec["subsets"][_]
+          subset["trafficPolicy"] == { "tls": {"mode": "DISABLE"}}
+
+          msg := sprintf("subsets[].trafficPolicy.tls.mode == DISABLE for host-subset: %v-%v", [d.spec.host, subset.name])
+        }
