@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: AllowedRepositories
+kind: ContainerAllowedImages
 metadata:
-  name: restrict-repositories
+  name: container-allowed-images
 spec:
   match:
     kinds:

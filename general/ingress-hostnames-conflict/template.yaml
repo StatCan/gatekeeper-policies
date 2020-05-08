@@ -1,16 +1,16 @@
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
-  name: uniqueingresshost
+  name: ingresshostnamesconflict
 spec:
   crd:
     spec:
       names:
-        kind: UniqueIngressHost
+        kind: IngressHostnamesConflict
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
-        package uniqueingresshost
+        package ingresshostnamesconflict
 
         identical(obj, review) {
           obj.metadata.namespace == review.object.metadata.namespace
