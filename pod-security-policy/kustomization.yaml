@@ -21,5 +21,4 @@ kind: Kustomization
 # crucial ways (image tags, a few server arguments,
 # etc. that differ from the common base).
 bases:
-- general
-- pod-security-policy
+  - forbidden-sysctls
