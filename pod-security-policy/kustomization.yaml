@@ -25,3 +25,4 @@ bases:
   - forbidden-sysctls
   - host-namespaces
   - proc-mount
+  - seccomp
