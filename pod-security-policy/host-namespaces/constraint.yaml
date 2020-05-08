@@ -1,0 +1,10 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PSPHostNamespace
+metadata:
+  name: psp-host-namespace
+spec:
+  match:
+    excludedNamespaces: ["kube-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
