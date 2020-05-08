@@ -24,3 +24,4 @@ bases:
   - flexvolume-drivers
   - forbidden-sysctls
   - host-namespaces
+  - proc-mount
