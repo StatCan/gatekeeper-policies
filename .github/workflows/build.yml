@@ -41,9 +41,9 @@ jobs:
     - run: |
         sleep 5
 
-    ############
-    # KUSTOMIZE
-    ############
+    #######################
+    # CONSTRAINTS TEMPLATES
+    #######################
 
     # Apply all of the contraint templates
     - name: kustomize
