@@ -49,6 +49,9 @@ spec:
       - 'quay.io/open-policy-agent/'
       - 'openpolicyagent/opa'
 
+      # Fluentd
+      - 'jvassev/kube-fluentd-operator'
+
       # Hashicorp
       - 'vault:'
       - 'hashicorp/'
