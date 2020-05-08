@@ -21,4 +21,5 @@ kind: Kustomization
 # crucial ways (image tags, a few server arguments,
 # etc. that differ from the common base).
 bases:
+  - peer-authentication
   - traffic-policy

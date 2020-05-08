@@ -116,6 +116,13 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/proc-mount/constraint.yaml
 
+    # Apply constraint for peer-authentication
+    - name: kubectl
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f service-mesh/peer-authentication/constraint.yaml
+
     # Apply constraint for traffic-policy
     - name: kubectl
       uses: statcan/actions/kubectl@master
