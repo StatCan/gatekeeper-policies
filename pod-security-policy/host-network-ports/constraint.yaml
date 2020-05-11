@@ -4,6 +4,7 @@ metadata:
   name: psp-host-network-ports
 spec:
   match:
+    excludedNamespaces: ["gconfid"]
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
