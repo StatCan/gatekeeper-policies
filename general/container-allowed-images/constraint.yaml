@@ -17,6 +17,7 @@ spec:
       # TMP
       - 'bitnami/kubectl'
       - 'sylus/gitlab-ci'
+      - 'python'
       - 'docker:'
       - 'certbot/'
       - 'aquasec/'
