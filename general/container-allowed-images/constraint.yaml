@@ -14,7 +14,7 @@ spec:
       - 'k8scc01covidacr.azurecr.io/'
       - 'statcan/'
 
-      # TMP
+      # Temporary
       - 'bitnami/kubectl'
       - 'sylus/gitlab-ci'
       - 'python'
