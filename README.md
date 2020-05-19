@@ -6,7 +6,7 @@ Policies that are to be enforced by GateKeeper for the DAaaS Platform.
 
 ## Images
 
-A helpful command to list all of the known container images is given below:
+A helpful command to list all of the known container images in the cluster is given below:
 
 ```sh
 kubectl get pod -o json -A | jq -r '.items[].spec.containers[].image' | sed -E 's/(.*):.*/\1/g' | sort -u
