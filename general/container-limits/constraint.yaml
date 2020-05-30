@@ -5,7 +5,7 @@ metadata:
 spec:
   enforcementAction: dryrun
   match:
-    excludedNamespaces: ["kube-system", "istio-system"]
+    excludedNamespaces: ["kube-system", "kubeflow", "istio-system"]
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
