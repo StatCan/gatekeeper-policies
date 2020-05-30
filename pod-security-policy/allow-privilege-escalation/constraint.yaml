@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PSPAllowPrivilegeEscalationContainer
+metadata:
+  name: psp-allow-privilege-escalation-container
+spec:
+  enforcementAction: dryrun
+  match:
+    excludedNamespaces: ["kube-system", "kubeflow", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
