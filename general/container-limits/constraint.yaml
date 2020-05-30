@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ContainerLimits
+metadata:
+  name: container-limits
+spec:
+  enforcementAction: dryrun
+  match:
+    excludedNamespaces: ["kube-system", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    cpu: "200m"
+    memory: "1Gi"

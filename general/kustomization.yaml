@@ -22,6 +22,7 @@ kind: Kustomization
 # etc. that differ from the common base).
 bases:
   - container-allowed-images
+  - container-limits
   - ingress-hostnames-conflict
   - loadbalancer-no-public-ips
 
