@@ -88,6 +88,13 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/loadbalancer-no-public-ips/constraint.yaml
 
+    # Apply constraint for allow-privilege-escalation
+    - name: kubectl
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/allow-privilege-escalation/constraint.yaml
+
     # Apply constraint for flexvolume-drivers
     - name: kubectl
       uses: statcan/actions/kubectl@master
@@ -122,6 +129,13 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/proc-mount/constraint.yaml
+
+    # Apply constraint for read-only-root-filesystem
+    - name: kubectl
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
 
     # Apply constraint for peer-authentication
     - name: kubectl

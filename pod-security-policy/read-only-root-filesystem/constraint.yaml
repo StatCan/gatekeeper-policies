@@ -1,0 +1,11 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PSPReadOnlyRootFilesystem
+metadata:
+  name: psp-readonlyrootfilesystem
+spec:
+  enforcementAction: dryrun
+  match:
+    excludedNamespaces: ["kube-system", "kubeflow", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]

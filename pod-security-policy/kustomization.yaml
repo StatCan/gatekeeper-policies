@@ -21,8 +21,10 @@ kind: Kustomization
 # crucial ways (image tags, a few server arguments,
 # etc. that differ from the common base).
 bases:
+  - allow-privilege-escalation
   - flexvolume-drivers
   - forbidden-sysctls
   - host-namespaces
   - host-network-ports
   - proc-mount
+  - read-only-root-filesystem
