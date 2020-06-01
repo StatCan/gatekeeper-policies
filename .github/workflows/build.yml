@@ -61,105 +61,105 @@ jobs:
     #############
 
     # Apply constraint for container-allowed-images
-    - name: kubectl
+    - name: constraint for container-allowed-images
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/container-allowed-images/constraint.yaml
 
     # Apply constraint for container-limits
-    - name: kubectl
+    - name: constraint for container-limits
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/container-limits/constraint.yaml
 
     # Apply constraint for ingress-hostnames-conflict
-    - name: kubectl
+    - name: constraint for ingress-hostnames-conflict
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/ingress-hostnames-conflict/constraint.yaml
 
     # Apply constraint for loadbalancer-no-public-ips
-    - name: kubectl
+    - name: constraint for loadbalancer-no-public-ips
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f general/loadbalancer-no-public-ips/constraint.yaml
 
     # Apply constraint for allow-privilege-escalation
-    - name: kubectl
+    - name: constraint for allow-privilege-escalation
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/allow-privilege-escalation/constraint.yaml
 
     # Apply constraint for flexvolume-drivers
-    - name: kubectl
+    - name: constraint for flexvolume-drivers
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/flexvolume-drivers/constraint.yaml
 
     # Apply constraint for forbidden-sysctls
-    - name: kubectl
+    - name: constraint for forbidden-sysctls
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/forbidden-sysctls/constraint.yaml
 
     # Apply constraint for host-namespaces
-    - name: kubectl
+    - name: constraint for host-namespaces
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/host-namespaces/constraint.yaml
 
     # Apply constraint for host-network-ports
-    - name: kubectl
+    - name: constraint for host-network-ports
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/host-network-ports/constraint.yaml
 
-    # Apply constraint for privileged-containers
-    - name: kubectl
+    # Apply constraint for host-network-ports
+    - name: constraint for host-network-ports
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/privileged-containers/constraint.yaml
 
     # Apply constraint for proc-mount
-    - name: kubectl
+    - name: constraint for proc-mount
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/proc-mount/constraint.yaml
 
     # Apply constraint for read-only-root-filesystem
-    - name: kubectl
+    - name: constraint for read-only-root-filesystem
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
 
     # Apply constraint for peer-authentication
-    - name: kubectl
+    - name: constraint for peer-authentication
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f service-mesh/peer-authentication/constraint.yaml
 
     # Apply constraint for port-naming
-    - name: kubectl
+    - name: constraint for port-naming
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f service-mesh/port-naming/constraint.yaml
 
     # Apply constraint for traffic-policy
-    - name: kubectl
+    - name: constraint for traffic-policy
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
