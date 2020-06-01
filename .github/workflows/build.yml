@@ -103,11 +103,11 @@ jobs:
     #     args: apply -f pod-security-policy/apparmor/constraint.yaml
 
     # Apply constraint for capabilities
-    - name: constraint for capabilities
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f pod-security-policy/capabilities/constraint.yaml
+    # - name: constraint for capabilities
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f pod-security-policy/capabilities/constraint.yaml
 
     # Apply constraint for flexvolume-drivers
     - name: constraint for flexvolume-drivers

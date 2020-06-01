@@ -23,7 +23,7 @@ kind: Kustomization
 bases:
   # - allow-privilege-escalation
   # - apparmor
-  - capabilities
+  # - capabilities
   - flexvolume-drivers
   - forbidden-sysctls
   - fsgroup
