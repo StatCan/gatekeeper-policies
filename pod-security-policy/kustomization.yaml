@@ -29,4 +29,5 @@ bases:
   - privileged-containers
   - proc-mount
   - read-only-root-filesystem
+  - users
   - volume

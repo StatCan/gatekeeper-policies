@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PSPAllowedUsers
+metadata:
+  name: psp-pods-allowed-user-ranges
+spec:
+  enforcementAction: dryrun
+  match:
+    excludedNamespaces: ["kube-system", "kubeflow", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    runAsUser:
+      rule: MustRunAs
+      ranges:
+        - min: 100
+          max: 200

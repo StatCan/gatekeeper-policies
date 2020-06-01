@@ -144,6 +144,13 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
 
+    # Apply constraint for users
+    - name: constraint for users
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/users/constraint.yaml
+
     # Apply constraint for volume
     - name: constraint for volume
       uses: statcan/actions/kubectl@master
