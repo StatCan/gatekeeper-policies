@@ -123,8 +123,8 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/host-network-ports/constraint.yaml
 
-    # Apply constraint for host-network-ports
-    - name: constraint for host-network-ports
+    # Apply constraint for privileged-containers
+    - name: constraint for privileged-containers
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
