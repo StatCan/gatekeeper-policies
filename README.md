@@ -4,14 +4,6 @@ Policies that are to be enforced by GateKeeper for the DAaaS Platform.
 
 > Note: Gatekeeper is a validating / mutating webhook that enforces CRD-based policies executed by the Open Policy Agent.
 
-## Images
-
-A helpful command to list all of the known container images in the cluster is given below:
-
-```sh
-kubectl get pod -o json -A | jq -r '.items[].spec.containers[].image' | sed -E 's/(.*):.*/\1/g' | sort -u
-```
-
 ## General
 
 This repo contains common policies that can be used to enforce specific Kubernetes features.
@@ -60,6 +52,18 @@ This repo contains a set of common policies that can be used to enforce specific
 | Peer Authentication | `spec.peers`         | [peer-authentication](service-mesh/peer-authentication) |
 | Port Naming         | `service.spec.ports` | [port-naming](service-mesh/port-naming)                 |
 | Traffic Policy      | `spec.trafficPolicy` | [traffic-policy](service-mesh/traffic-policy)           |
+
+## Commands
+
+A helpful command to list all of the known container images in the cluster is given below:
+
+```sh
+kubectl get pod -o json -A | jq -r '.items[].spec.containers[].image' | sed -E 's/(.*):.*/\1/g' | sort -u
+```
+
+## Links
+
+* [Rego Playground](https://play.openpolicyagent.org/)
 
 ## Acknowledgements
 
