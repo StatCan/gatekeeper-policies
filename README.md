@@ -14,7 +14,14 @@ kubectl get pod -o json -A | jq -r '.items[].spec.containers[].image' | sed -E '
 
 ## General
 
-TODO.
+This repo contains common policies that can be used to enforce specific Kubernetes features.
+
+| Control Aspect              | Field Names in K8S   | Gatekeeper Constraint and Constraint Template                    |
+|-----------------------------|----------------------|------------------------------------------------------------------|
+| Container Allowed Images    | `spec.peers`         | [container-allowed-images](general/container-allowed-images)     |
+| Contaienr Limits            | `service.spec.ports` | [container-limits](general/container-limits)                     |
+| Ingress Hostnames Conflict  | `spec.trafficPolicy` | [ingress-hostnames-conflict](general/ingress-hostnames-conflict) |
+| Load Balancer No Public IPs | `spec.trafficPolicy` | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips) |
 
 ## Pod Security Policies
 
