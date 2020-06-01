@@ -24,6 +24,7 @@ bases:
   - allow-privilege-escalation
   - flexvolume-drivers
   - forbidden-sysctls
+  - fsgroup
   - host-namespaces
   - host-network-ports
   - privileged-containers
