@@ -22,9 +22,11 @@ kind: Kustomization
 # etc. that differ from the common base).
 bases:
   - allow-privilege-escalation
+  - capabilities
   - flexvolume-drivers
   - forbidden-sysctls
   - fsgroup
+  - host-filesystem
   - host-namespaces
   - host-network-ports
   - privileged-containers

@@ -95,6 +95,13 @@ jobs:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/allow-privilege-escalation/constraint.yaml
 
+    # Apply constraint for capabilities
+    - name: constraint for capabilities
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/capabilities/constraint.yaml
+
     # Apply constraint for flexvolume-drivers
     - name: constraint for flexvolume-drivers
       uses: statcan/actions/kubectl@master
@@ -115,6 +122,13 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/fsgroup/constraint.yaml
+
+    # Apply constraint for host-filesystem
+    - name: constraint for host-filesystem
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/host-filesystem/constraint.yaml
 
     # Apply constraint for host-namespaces
     - name: constraint for host-namespaces
@@ -150,6 +164,13 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
+
+    # Apply constraint for seccomp
+    # - name: constraint for seccomp
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f pod-security-policy/seccomp/constraint.yaml
 
     # Apply constraint for users
     - name: constraint for users
