@@ -12,4 +12,10 @@ spec:
   parameters:
     allowedHostPaths:
     - readOnly: true
-      pathPrefix: "/foo"
+      pathPrefix: "/etc/kubernetes/azure.json"
+    - readOnly: true
+      pathPrefix: "/etc/kubernetes/certs"
+    - readOnly: true
+      pathPrefix: "/run/xtables.lock"
+    - readOnly: true
+      pathPrefix: "/var/lib/kubelet/device-plugins"
