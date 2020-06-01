@@ -22,7 +22,7 @@ kind: Kustomization
 # etc. that differ from the common base).
 bases:
   - allow-privilege-escalation
-  - apparmor
+  # - apparmor
   - capabilities
   - flexvolume-drivers
   - forbidden-sysctls

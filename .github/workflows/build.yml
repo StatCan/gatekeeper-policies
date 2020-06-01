@@ -96,11 +96,11 @@ jobs:
         args: apply -f pod-security-policy/allow-privilege-escalation/constraint.yaml
 
     # Apply constraint for apparmor
-    - name: constraint for apparmor
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f pod-security-policy/apparmor/constraint.yaml
+    # - name: constraint for apparmor
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f pod-security-policy/apparmor/constraint.yaml
 
     # Apply constraint for capabilities
     - name: constraint for capabilities
