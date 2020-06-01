@@ -15,7 +15,6 @@ spec:
       - 'statcan/'
 
       # Temporary
-      - 'bitnami/kubectl'
       - 'sylus/gitlab-ci'
       - 'python'
       - 'docker:'
@@ -23,6 +22,10 @@ spec:
       - 'aquasec/'
       - 'cachethq/docker:'
       - 'docker.io/postgres:'
+      - 'bitnami/matomo'
+      - 'bitnami/matomo:'
+      - 'bitnami/kubectl'
+      - 'bitnami/kubectl:'
       - 'bitnami/redis:'
       - 'redis:'
       - 'microsoft/mssql-server-linux:'
@@ -35,7 +38,6 @@ spec:
       - 'notary:'
       - 'solr:'
       - 'docker.io/bitnami/pgpool:'
-      - 'bitnami/kubectl:'
       - 'zookeeper:'
       - 'govcloud/'
       - 'jupyter/'
@@ -135,6 +137,7 @@ spec:
       - 'mysql:'
       - 'bitnami/postgresql'
       - 'bitnami/minideb'
+      - 'docker.io/bitnami/mariadb'
       - 'docker.io/bitnami/postgresql'
       - 'docker.io/bitnami/minideb'
 
