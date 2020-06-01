@@ -21,6 +21,7 @@ spec:
         input_read_only_root_fs(c) {
             not has_field(c, "securityContext")
         }
+
         input_read_only_root_fs(c) {
             not c.securityContext.readOnlyRootFilesystem == true
         }

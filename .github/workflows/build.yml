@@ -166,11 +166,11 @@ jobs:
         args: apply -f pod-security-policy/proc-mount/constraint.yaml
 
     # Apply constraint for read-only-root-filesystem
-    - name: constraint for read-only-root-filesystem
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
+    # - name: constraint for read-only-root-filesystem
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
 
     # Apply constraint for seccomp
     # - name: constraint for seccomp

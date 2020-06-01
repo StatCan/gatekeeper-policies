@@ -32,7 +32,7 @@ bases:
   - host-network-ports
   - privileged-containers
   - proc-mount
-  - read-only-root-filesystem
+  # - read-only-root-filesystem
   # - seccomp
   # - selinux
   # - users
