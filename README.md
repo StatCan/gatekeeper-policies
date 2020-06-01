@@ -25,24 +25,24 @@ sensitive aspects of the pod specification. The `PodSecurityPolicy` objects defi
 
 An administrator can control the following by setting the field in PSP or by deploying the corresponding Gatekeeper constraint and constraint templates:
 
-| Control Aspect                                    | Field Names in PSP                                                          | Gatekeeper Constraint and Constraint Template            |
-|---------------------------------------------------|-----------------------------------------------------------------------------|----------------------------------------------------------|
-| Running of privileged containers                  | `privileged`                                                                | [privileged-containers](privileged-containers)           |
-| Usage of host namespaces                          | `hostPID`, `hostIPC`                                                        | [host-namespaces](host-namespaces)                       |
-| Usage of host networking and ports                | `hostNetwork`, `hostPorts`                                                  | [host-network-ports](host-network-ports)                 |
-| Usage of volume types                             | `volumes`                                                                   | [volumes](volumes)                                       |
-| Usage of the host filesystem                      | `allowedHostPaths`                                                          | [host-filesystem](host-filesystem)                       |
-| White list of Flexvolume drivers                  | `allowedFlexVolumes`                                                        | [flexvolume-drivers](flexvolume-drivers)                 |
-| Allocating an FSGroup that owns the pod's volumes | `fsGroup`                                                                   | [fsgroup](fsgroup)                                       |
-| Requiring the use of a read only root file system | `readOnlyRootFilesystem`                                                    | [read-only-root-filesystem](read-only-root-filesystem)   |
-| The user and group IDs of the container           | `runAsUser`, `runAsGroup`, `supplementalGroups`                             | [users](users)                                           |
-| Restricting escalation to root privileges         | `allowPrivilegeEscalation`, `defaultAllowPrivilegeEscalation`               | [allow-privilege-escalation](allow-privilege-escalation) |
-| Linux capabilities                                | `defaultAddCapabilities`, `requiredDropCapabilities`, `allowedCapabilities` | [capabilities](capabilities)                             |
-| The SELinux context of the container              | `seLinux`                                                                   | [seLinux](selinux)                                       |
-| The Allowed Proc Mount types for the container    | `allowedProcMountTypes`                                                     | [proc-mount](proc-mount)                                 |
-| The AppArmor profile used by containers           | annotations                                                                 | [apparmor](apparmor)                                     |
-| The seccomp profile used by containers            | annotations                                                                 | [seccomp](seccomp)                                       |
-| The sysctl profile used by containers             | `forbiddenSysctls`,`allowedUnsafeSysctls`                                   | [forbidden-sysctls](forbidden-sysctls)                   |
+| Control Aspect                                    | Field Names in PSP                                                          | Gatekeeper Constraint and Constraint Template                                |
+|---------------------------------------------------|-----------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| Running of privileged containers                  | `privileged`                                                                | [privileged-containers](pod-security-policy/privileged-containers)           |
+| Usage of host namespaces                          | `hostPID`, `hostIPC`                                                        | [host-namespaces](pod-security-policy/host-namespaces)                       |
+| Usage of host networking and ports                | `hostNetwork`, `hostPorts`                                                  | [host-network-ports](pod-security-policy/host-network-ports)                 |
+| Usage of volume types                             | `volumes`                                                                   | [volumes](pod-security-policy/volumes)                                       |
+| Usage of the host filesystem                      | `allowedHostPaths`                                                          | [host-filesystem](pod-security-policy/host-filesystem)                       |
+| White list of Flexvolume drivers                  | `allowedFlexVolumes`                                                        | [flexvolume-drivers](pod-security-policy/flexvolume-drivers)                 |
+| Allocating an FSGroup that owns the pod's volumes | `fsGroup`                                                                   | [fsgroup](pod-security-policy/fsgroup)                                       |
+| Requiring the use of a read only root file system | `readOnlyRootFilesystem`                                                    | [read-only-root-filesystem](pod-security-policy/read-only-root-filesystem)   |
+| The user and group IDs of the container           | `runAsUser`, `runAsGroup`, `supplementalGroups`                             | [users](pod-security-policy/users)                                           |
+| Restricting escalation to root privileges         | `allowPrivilegeEscalation`, `defaultAllowPrivilegeEscalation`               | [allow-privilege-escalation](pod-security-policy/allow-privilege-escalation) |
+| Linux capabilities                                | `defaultAddCapabilities`, `requiredDropCapabilities`, `allowedCapabilities` | [capabilities](pod-security-policy/capabilities)                             |
+| The SELinux context of the container              | `seLinux`                                                                   | [seLinux](pod-security-policy/selinux)                                       |
+| The Allowed Proc Mount types for the container    | `allowedProcMountTypes`                                                     | [proc-mount](pod-security-policy/proc-mount)                                 |
+| The AppArmor profile used by containers           | annotations                                                                 | [apparmor](pod-security-policy/apparmor)                                     |
+| The seccomp profile used by containers            | annotations                                                                 | [seccomp](pod-security-policy/seccomp)                                       |
+| The sysctl profile used by containers             | `forbiddenSysctls`,`allowedUnsafeSysctls`                                   | [forbidden-sysctls](pod-security-policy/forbidden-sysctls)                   |
 
 ## Service Mesh
 

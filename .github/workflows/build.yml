@@ -193,12 +193,12 @@ jobs:
     #     kubeconfig: ${{ secrets.KUBECONFIG }}
     #     args: apply -f pod-security-policy/users/constraint.yaml
 
-    # Apply constraint for volume
-    - name: constraint for volume
+    # Apply constraint for volumes
+    - name: constraint for volumes
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f pod-security-policy/volume/constraint.yaml
+        args: apply -f pod-security-policy/volumes/constraint.yaml
 
     # Apply constraint for peer-authentication
     - name: constraint for peer-authentication

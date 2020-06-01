@@ -36,4 +36,4 @@ bases:
   # - seccomp
   # - selinux
   # - users
-  - volume
+  - volumes
