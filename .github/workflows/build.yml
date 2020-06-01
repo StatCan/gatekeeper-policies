@@ -89,11 +89,11 @@ jobs:
         args: apply -f general/loadbalancer-no-public-ips/constraint.yaml
 
     # Apply constraint for allow-privilege-escalation
-    - name: constraint for allow-privilege-escalation
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f pod-security-policy/allow-privilege-escalation/constraint.yaml
+    # - name: constraint for allow-privilege-escalation
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f pod-security-policy/allow-privilege-escalation/constraint.yaml
 
     # Apply constraint for apparmor
     # - name: constraint for apparmor
