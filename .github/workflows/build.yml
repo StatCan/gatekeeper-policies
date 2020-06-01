@@ -68,11 +68,11 @@ jobs:
         args: apply -f general/container-allowed-images/constraint.yaml
 
     # Apply constraint for container-limits
-    - name: constraint for container-limits
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f general/container-limits/constraint.yaml
+    # - name: constraint for container-limits
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f general/container-limits/constraint.yaml
 
     # Apply constraint for ingress-hostnames-conflict
     - name: constraint for ingress-hostnames-conflict

@@ -20,3 +20,4 @@ spec:
     - persistentVolumeClaim
     - hostPath
     - flexVolume
+    - azureFile
