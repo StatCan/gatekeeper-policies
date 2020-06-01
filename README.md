@@ -46,7 +46,13 @@ An administrator can control the following by setting the field in PSP or by dep
 
 ## Service Mesh
 
-TODO.
+This repo contains a set of common policies that can be used to enforce specific Service Mesh features.
+
+| Control Aspect      | Field Names in Mesh  | Gatekeeper Constraint and Constraint Template           |
+|---------------------|----------------------|---------------------------------------------------------|
+| Peer Authentication | `spec.peers`         | [peer-authentication](service-mesh/peer-authentication) |
+| Port Naming         | `service.spec.ports` | [port-naming](service-mesh/port-naming)                 |
+| Traffic Policy      | `spec.trafficPolicy` | [traffic-policy](service-mesh/traffic-policy)           |
 
 ## Acknowledgements
 
