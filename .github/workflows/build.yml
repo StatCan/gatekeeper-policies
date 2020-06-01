@@ -30,8 +30,8 @@ jobs:
     # GATEKEEPER
     ############
 
-    # Run the Deployment fo GateKeeper
-    - name: kubectl
+    # Run the Deployment for GateKeeper
+    - name: Deployment for GateKeeper
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
@@ -45,8 +45,8 @@ jobs:
     # CONSTRAINTS TEMPLATES
     #######################
 
-    # Apply all of the contraint templates
-    - name: kustomize
+    # Apply all of the constraint templates
+    - name: constraint templates
       uses: statcan/actions/kubectl@master
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
@@ -143,6 +143,13 @@ jobs:
       with:
         kubeconfig: ${{ secrets.KUBECONFIG }}
         args: apply -f pod-security-policy/read-only-root-filesystem/constraint.yaml
+
+    # Apply constraint for volume
+    - name: constraint for volume
+      uses: statcan/actions/kubectl@master
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        args: apply -f pod-security-policy/volume/constraint.yaml
 
     # Apply constraint for peer-authentication
     - name: constraint for peer-authentication
