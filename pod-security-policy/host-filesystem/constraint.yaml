@@ -11,9 +11,15 @@ spec:
         kinds: ["Pod"]
   parameters:
     allowedHostPaths:
+    - readOnly: false
+      pathPrefix: "/run/xtables.lock"
+    - readOnly: false
+      pathPrefix: "/var/lib/kubelet/device-plugins"
     - readOnly: true
-      pathPrefix: "/etc/kubernetes"
+      pathPrefix: "/etc/kubernetes/azure.json"
     - readOnly: true
-      pathPrefix: "/run"
-    - readOnly: true
-      pathPrefix: "/var/lib/kubelet"
+      pathPrefix: "/etc/kubernetes/certs"
+    - readOnly: false
+      pathPrefix: "/proc"
+    - readOnly: false
+      pathPrefix: "/sys"
