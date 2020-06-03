@@ -21,7 +21,7 @@ kind: Kustomization
 # crucial ways (image tags, a few server arguments,
 # etc. that differ from the common base).
 bases:
-  # - allow-privilege-escalation
+  - allow-privilege-escalation
   # - apparmor
   # - capabilities
   - flexvolume-drivers
@@ -32,7 +32,7 @@ bases:
   - host-network-ports
   - privileged-containers
   - proc-mount
-  # - read-only-root-filesystem
+  - read-only-root-filesystem
   # - seccomp
   # - selinux
   # - users
