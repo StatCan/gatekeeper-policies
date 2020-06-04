@@ -385,7 +385,7 @@ webhooks:
       name: gatekeeper-webhook-service
       namespace: gatekeeper-system
       path: /v1/admit
-  failurePolicy: Ignore
+  failurePolicy: Fail
   name: validation.gatekeeper.sh
   namespaceSelector:
     matchExpressions:
