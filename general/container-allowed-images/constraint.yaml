@@ -160,3 +160,4 @@ spec:
       - 'zachomedia/minio'
       - 'zachomedia/etcd'
       - 'zachomedia/kubernetes-sidecar-terminator'
+      - 'zachomedia/gitlab-runner'
