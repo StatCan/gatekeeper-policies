@@ -140,6 +140,7 @@ spec:
       - 'docker.io/bitnami/mariadb'
       - 'docker.io/bitnami/postgresql'
       - 'docker.io/bitnami/minideb'
+      - 'library/mongo'
 
       # Dremio
       - 'dremio/'
