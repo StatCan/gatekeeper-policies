@@ -15,6 +15,7 @@ spec:
       - 'statcan/'
 
       # Temporary
+      - "curlimages/curl"
       - 'sylus/gitlab-ci'
       - 'python'
       - 'docker:'
