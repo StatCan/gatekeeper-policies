@@ -12,6 +12,7 @@ spec:
       # StatCan Repository
       - 'artifactory.cloud.statcan.ca/'
       - 'k8scc01covidacr.azurecr.io/'
+      - 'k8scc01covidmlopsacr.azurecr.io'
       - 'statcan/'
 
       # Temporary
