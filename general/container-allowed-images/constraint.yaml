@@ -71,7 +71,7 @@ spec:
       - 'library/busybox'
 
       # App Identity
-      - 'ibmcloudsecurity/app-identity-and-access-adapter'
+      - 'ibmcloudsecurity/app-identity-and-access-adapter:'
 
       # Istio
       - 'istio/'
