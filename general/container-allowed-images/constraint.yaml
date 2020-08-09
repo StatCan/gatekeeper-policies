@@ -171,7 +171,4 @@ spec:
       - 'velero'
 
       # Utilities
-      - 'zachomedia/minio'
-      - 'zachomedia/etcd'
-      - 'zachomedia/kubernetes-sidecar-terminator'
-      - 'zachomedia/gitlab-runner'
+      - 'zachomedia/'
