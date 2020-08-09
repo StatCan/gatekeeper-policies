@@ -70,6 +70,9 @@ spec:
       - 'busybox:'
       - 'library/busybox'
 
+      # App Identity
+      - 'ibmcloudsecurity/app-identity-and-access-adapter'
+
       # Istio
       - 'istio/'
       - 'docker.io/istio/'
@@ -114,21 +117,29 @@ spec:
       - 'jimmidyson/configmap-reload:'
 
       # Kubeflow
-      - 'argoproj/'
-      - 'seldonio/'
-      - 'docker.io/seldonio/'
+      - 'gcr.io/arrikto/kubeflow/'
+      - 'gcr.io/cloud-builders/'
+      - 'gcr.io/distroless/'
+      - 'gcr.io/istio-release/'
       - 'gcr.io/google_containers/'
       - 'gcr.io/kf-pipeline-contrib/'
       - 'gcr.io/kfserving/'
       - 'gcr.io/knative-releases/'
       - 'gcr.io/kubebuilder/'
+      - 'gcr.io/kubeflow-ci/'
       - 'gcr.io/kubeflow-images-public/'
       - 'gcr.io/ml-pipeline/'
       - 'gcr.io/spark-operator/'
+      - 'gcr.io/tekton-releases/'
+      - 'gcr.io/stackdriver-prometheus/'
       - 'gcr.io/tfx-oss-public/'
-      - 'google/cloud-sdk'
+      - 'argoproj/'
       - 'metacontroller/'
+      - 'seldonio/'
       - 'tensorflow/'
+      - 'docker.io/kubeflowkatib/'
+      - 'docker.io/seldonio/'
+      - 'google/cloud-sdk'
 
       # Volcano
       - 'docker.io/volcanosh/'
