@@ -172,3 +172,6 @@ spec:
 
       # Utilities
       - 'zachomedia/'
+      
+      # Apache Pulsar
+      - 'apachepulsar/'
