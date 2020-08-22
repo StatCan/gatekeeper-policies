@@ -121,6 +121,7 @@ spec:
       - 'gcr.io/cloud-builders/'
       - 'gcr.io/distroless/'
       - 'gcr.io/istio-release/'
+      - 'gcr.io/google-containers/'
       - 'gcr.io/google_containers/'
       - 'gcr.io/kf-pipeline-contrib/'
       - 'gcr.io/kfserving/'
@@ -172,6 +173,6 @@ spec:
 
       # Utilities
       - 'zachomedia/'
-      
+
       # Apache Pulsar
       - 'apachepulsar/'
