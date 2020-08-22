@@ -11,3 +11,4 @@ spec:
     allowedFlexVolumes:
     - driver: "azure/blobfuse"
     - driver: "microsoft.com/smb"
+    - driver: "informaticslab/goofys-flex-volume"
