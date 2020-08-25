@@ -30,16 +30,16 @@ jobs:
     # GATEKEEPER
     ############
 
-    # Run the Deployment for GateKeeper
-    - name: Deployment for GateKeeper
-      uses: statcan/actions/kubectl@master
-      with:
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        args: apply -f crd/gatekeeper.yaml
+    # # Run the Deployment for GateKeeper
+    # - name: Deployment for GateKeeper
+    #   uses: statcan/actions/kubectl@master
+    #   with:
+    #     kubeconfig: ${{ secrets.KUBECONFIG }}
+    #     args: apply -f crd/gatekeeper.yaml
 
-    # Wait 5 seconds for the Operator to deploy
-    - run: |
-        sleep 5
+    # # Wait 5 seconds for the Operator to deploy
+    # - run: |
+    #     sleep 5
 
     #######################
     # CONSTRAINTS TEMPLATES
