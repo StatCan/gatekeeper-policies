@@ -16,6 +16,7 @@ spec:
       - 'statcan/'
 
       # Temporary
+      - "lachlanevenson/k8s-helm:"
       - "curlimages/curl"
       - 'sylus/gitlab-ci'
       - 'python'
