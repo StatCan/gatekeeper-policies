@@ -16,6 +16,8 @@ spec:
       - 'statcan/'
 
       # Temporary
+      - "openpolicyagent/"
+      - "octopusdeploy/octo"
       - "lachlanevenson/k8s-helm:"
       - "curlimages/curl"
       - 'sylus/gitlab-ci'
