@@ -16,6 +16,8 @@ spec:
       - 'statcan/'
 
       # Temporary
+      - "zap2docker-stable:"
+      - "rabbitmq:"
       - "openpolicyagent/"
       - "octopusdeploy/octo"
       - "lachlanevenson/k8s-helm:"
