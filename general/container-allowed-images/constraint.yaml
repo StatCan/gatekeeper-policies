@@ -16,7 +16,7 @@ spec:
       - 'statcan/'
 
       # Temporary
-      - "zap2docker-stable:"
+      - "owasp/zap2docker-stable:"
       - "rabbitmq:"
       - "openpolicyagent/"
       - "octopusdeploy/octo"
