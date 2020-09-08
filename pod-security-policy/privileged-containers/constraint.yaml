@@ -3,9 +3,34 @@ kind: PSPPrivilegedContainer
 metadata:
   name: psp-privileged-container
 spec:
-  enforcementAction: dryrun
   match:
-    excludedNamespaces: ["kube-system", "kubeflow", "pachyderm", "istio-system"]
+    excludedNamespaces: ["kube-system", "istio-system"]
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+        # Ignore AAD Pod Identity
+        - operator: "NotIn"
+          key: "app.kubernetes.io/name"
+          values: ["aad-pod-identity"]
+        # Ignore AAD Pod Identity
+        - operator: "NotIn"
+          key: "component"
+          values: ["mic", "nmi"]
+        # Ignore Auditd Logging
+        - operator: "NotIn"
+          key: "name"
+          values: ["auditd-logging"]
+        # Ignore Pachyderm
+        - operator: "NotIn"
+          key: "app"
+          values: ["pachd"]
+        # Ignore Password Reset
+        - operator: "NotIn"
+          key: "app.kubernetes.io/name"
+          values: ["password-reset"]
+        # Ignore SonarQube
+        - operator: "NotIn"
+          key: "app"
+          values: ["sonarqube"]
