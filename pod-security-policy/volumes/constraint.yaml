@@ -3,7 +3,6 @@ kind: PSPVolumeTypes
 metadata:
   name: psp-volume-types
 spec:
-  enforcementAction: dryrun
   match:
     excludedNamespaces: ["kube-system", "kubeflow", "istio-system"]
     kinds:
@@ -11,7 +10,6 @@ spec:
         kinds: ["Pod"]
   parameters:
     volumes:
-    # - "*"
     - configMap
     - emptyDir
     - projected
