@@ -12,3 +12,4 @@ spec:
     - driver: "azure/blobfuse"
     - driver: "microsoft.com/smb"
     - driver: "informaticslab/goofys-flex-volume"
+    - driver: "statcan.gc.ca/boathouse"
