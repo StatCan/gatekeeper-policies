@@ -67,5 +67,7 @@ kubectl get pod -o json -A | jq -r '.items[].spec.containers[].image' | sed -E '
 
 ## Acknowledgements
 
+A lot of our policies were initially derived from the following sources:
+
 * [Anthos](https://github.com/GoogleCloudPlatform/acm-policy-controller-library)
 * [GateKeeper](https://github.com/open-policy-agent/gatekeeper/tree/master/library)
