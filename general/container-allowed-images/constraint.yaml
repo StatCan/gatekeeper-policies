@@ -62,6 +62,7 @@ spec:
       - 'k8s.gcr.io/'
       - 'nginx'
       - 'ubuntu:'
+      - 'kairen/rotate-elasticsearch-index'
 
       # Base containers
       - 'alpine:'
