@@ -71,6 +71,8 @@ spec:
       - 'library/bash'
       - 'python:'
       - 'library/python'
+      - 'julia:'
+      - 'library/julia'
       - 'sha256:'
       - 'library/sha256'
       - 'busybox'
