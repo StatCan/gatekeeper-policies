@@ -124,6 +124,7 @@ spec:
       # Kubecost
       - 'gcr.io/kubecost1/'
       - 'jimmidyson/configmap-reload:'
+      - 'quay.io/kubecost1/checks'
 
       # Kubeflow
       - 'gcr.io/arrikto/kubeflow/'
