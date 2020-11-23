@@ -27,6 +27,7 @@ spec:
       - 'docker:'
       - 'certbot/'
       - 'aquasec/'
+      - 'docker.io/aquasec/'
       - 'cachethq/docker:'
       - 'docker.io/postgres:'
       - 'bitnami/matomo'
