@@ -98,6 +98,9 @@ spec:
       - 'kiwigrid/k8s-sidecar'
       - 'quay.io/coreos/'
       - 'quay.io/prometheus/'
+      - 'jettech/kube-webhook-certgen'
+      - 'docker.io/jimmidyson/configmap-reload'
+      - 'squareup/ghostunnel'
 
       # Cert manager
       - 'quay.io/jetstack/'
