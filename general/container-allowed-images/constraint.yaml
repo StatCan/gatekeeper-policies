@@ -72,6 +72,7 @@ spec:
       - 'library/bash'
       - 'python:'
       - 'library/python'
+      - 'continuumio/miniconda'
       - 'julia:'
       - 'library/julia'
       - 'sha256:'
