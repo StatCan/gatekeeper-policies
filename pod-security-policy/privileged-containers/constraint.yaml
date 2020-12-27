@@ -34,3 +34,7 @@ spec:
         - operator: "NotIn"
           key: "app"
           values: ["sonarqube"]
+        # Ignore MetaController
+        - operator: "NotIn"
+          key: "app"
+          values: ["metacontroller"]
