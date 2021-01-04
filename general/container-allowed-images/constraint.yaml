@@ -66,6 +66,7 @@ spec:
       - 'kairen/rotate-elasticsearch-index'
 
       # Base containers
+      - 'alpine'
       - 'alpine:'
       - 'library/alpine'
       - 'bash:'
