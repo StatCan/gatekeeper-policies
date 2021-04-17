@@ -1,0 +1,88 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: secured-gateways
+spec:
+  crd:
+    spec:
+      names:
+        kind: SecuredGateways
+      validation:
+        openAPIV3Schema:
+          properties:
+            approvedCipherSuites:
+              type: array
+              items:
+                type: string
+            minTLSVersions:
+              type: array
+              items:
+                type: string
+            maxTLSVersions:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package securedgateways
+
+        # Ensure HTTP is only for redirect
+        violation[{"msg": msg}] {
+          some i
+          gateway := input.review.object
+          server := gateway.spec.servers[i]
+
+          is_http(server.protocol)
+          server.tls.httpsRedirect == false
+
+          msg := "HTTP servers can only be used for HTTPS redirect.\n"
+        }
+
+        is_http(protocol) {
+          protocol == "HTTP"
+        }
+
+        is_http(protocol) {
+          protocol == "HTTP2"
+        }
+
+        # Ensure HTTPS follows minimum TLS settings
+        violation[{"msg": msg}] {
+          some i
+          gateway := input.review.object
+          server := gateway.spec.servers[i]
+
+          server.protocol == "HTTPS"
+          not contains(input.parameters.minTLSVersions, server.tls.minProtocolVersion)
+          
+          msg := sprintf("minProtocolVersion for HTTPS must be one of the following: %v\n", input.parameters.minTLSVersions)
+        }
+
+        # Ensure TLS settings adhere to ITSP.40.062
+        violation[{"msg": msg}] {
+          some i
+          gateway := input.review.object
+          server := gateway.spec.servers[i]
+
+          server.protocol == "HTTPS"
+          not contains(input.parameters.maxTLSVersions, server.tls.maxProtocolVersion)
+
+          msg := sprintf("maxProtocolVersion for HTTPS must be one of the following: %v\n", [input.parameters.maxTLSVersions])
+        }
+
+        # Ensure TLS settings adhere to ITSP.40.062
+        violation[{"msg": msg}] {
+          some i
+          gateway := input.review.object
+          server := gateway.spec.servers[i]
+          
+          server.protocol == "HTTPS"
+          not contains(input.parameters.approvedCipherSuites, server.tls.cipherSuites[_])
+
+          msg := sprintf("Only the following CipherSuites may be used: %v\n", [input.parameters.approvedCipherSuites])
+        }
+
+        contains(array, string) {
+          array[_] == string
+        }
