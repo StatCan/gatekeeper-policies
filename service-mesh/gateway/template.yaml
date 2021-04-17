@@ -29,9 +29,8 @@ spec:
 
         # Ensure HTTP is only for redirect
         violation[{"msg": msg}] {
-          some i
           gateway := input.review.object
-          server := gateway.spec.servers[i]
+          server := gateway.spec.servers[_]
 
           is_http(server.protocol)
           server.tls.httpsRedirect == false
@@ -49,9 +48,8 @@ spec:
 
         # Ensure HTTPS follows minimum TLS settings
         violation[{"msg": msg}] {
-          some i
           gateway := input.review.object
-          server := gateway.spec.servers[i]
+          server := gateway.spec.servers[_]
 
           server.protocol == "HTTPS"
           not contains(input.parameters.minTLSVersions, server.tls.minProtocolVersion)
@@ -59,11 +57,10 @@ spec:
           msg := sprintf("minProtocolVersion for HTTPS must be one of the following: %v\n", input.parameters.minTLSVersions)
         }
 
-        # Ensure TLS settings adhere to ITSP.40.062
+        # Ensure HTTPS follows maximum TLS settings
         violation[{"msg": msg}] {
-          some i
           gateway := input.review.object
-          server := gateway.spec.servers[i]
+          server := gateway.spec.servers[_]
 
           server.protocol == "HTTPS"
           not contains(input.parameters.maxTLSVersions, server.tls.maxProtocolVersion)
@@ -71,11 +68,10 @@ spec:
           msg := sprintf("maxProtocolVersion for HTTPS must be one of the following: %v\n", [input.parameters.maxTLSVersions])
         }
 
-        # Ensure TLS settings adhere to ITSP.40.062
+        # Ensure only approved CipherSuites are used.
         violation[{"msg": msg}] {
-          some i
           gateway := input.review.object
-          server := gateway.spec.servers[i]
+          server := gateway.spec.servers[_]
           
           server.protocol == "HTTPS"
           not contains(input.parameters.approvedCipherSuites, server.tls.cipherSuites[_])
