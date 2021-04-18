@@ -32,10 +32,9 @@ spec:
           gateway := input.review.object
           server := gateway.spec.servers[_]
 
-          is_http(server.protocol)
+          is_http(server.port.protocol)
           server.tls.httpsRedirect == false
-
-          msg := "HTTP servers can only be used for HTTPS redirect.\n"
+          msg := "HTTP servers can only be used for HTTPS redirect."
         }
 
         is_http(protocol) {
@@ -50,11 +49,11 @@ spec:
         violation[{"msg": msg}] {
           gateway := input.review.object
           server := gateway.spec.servers[_]
-
-          server.protocol == "HTTPS"
-          not contains(input.parameters.minTLSVersions, server.tls.minProtocolVersion)
           
-          msg := sprintf("minProtocolVersion for HTTPS must be one of the following: %v\n", input.parameters.minTLSVersions)
+          server.port.protocol == "HTTPS"
+          not contains(input.parameters.minTLSVersions, server.tls.minProtocolVersion)
+
+          msg := sprintf("minProtocolVersion for HTTPS must be one of the following: %v", [input.parameters.minTLSVersions])
         }
 
         # Ensure HTTPS follows maximum TLS settings
@@ -62,21 +61,23 @@ spec:
           gateway := input.review.object
           server := gateway.spec.servers[_]
 
-          server.protocol == "HTTPS"
+          server.port.protocol == "HTTPS"
           not contains(input.parameters.maxTLSVersions, server.tls.maxProtocolVersion)
 
-          msg := sprintf("maxProtocolVersion for HTTPS must be one of the following: %v\n", [input.parameters.maxTLSVersions])
+          msg := sprintf("maxProtocolVersion for HTTPS must be one of the following: %v", [input.parameters.maxTLSVersions])
         }
 
         # Ensure only approved CipherSuites are used.
         violation[{"msg": msg}] {
           gateway := input.review.object
           server := gateway.spec.servers[_]
-          
-          server.protocol == "HTTPS"
-          not contains(input.parameters.approvedCipherSuites, server.tls.cipherSuites[_])
 
-          msg := sprintf("Only the following CipherSuites may be used: %v\n", [input.parameters.approvedCipherSuites])
+          server.port.protocol == "HTTPS"
+          approvedCipherSuites := {cs | cs = input.parameters.approvedCipherSuites[_]}
+          usedCipherSuites := {cs | cs = server.tls.cipherSuites[_]}
+          count(usedCipherSuites - approvedCipherSuites) != 0
+
+          msg := sprintf("Only the following CipherSuites may be used: %v", [approvedCipherSuites])
         }
 
         contains(array, string) {
