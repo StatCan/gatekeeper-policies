@@ -169,7 +169,7 @@ test_fail_http_redirect {
     count(result) == 1
 }
 
-test_fail_tls_contif {
+test_fail_tls_config {
     result := violation with input.parameters as parameters with input.review.object as gatewayFailTLSConfig
     trace(sprintf("%v", [result]))
     count(result) == 3
