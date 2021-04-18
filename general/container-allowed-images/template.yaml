@@ -20,15 +20,20 @@ spec:
       rego: |
         package containerallowedimages
 
+        # Amalgamate repos for all ContainerAllowedImages
+        # Requires that config.gatekeeper.sh/v1alpha1 syncs the CRD
+        allowedRepos = {repo | repo = data.inventory.cluster["v1beta1"].ContainerAllowedImages[_].spec.parameters.repos[_]}
+
         violation[{"msg": msg}] {
           container := input.review.object.spec.containers[_]
-          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          satisfied := [good | repo = allowedRepos[_] ; good = startswith(container.image, repo)]
           not any(satisfied)
           msg := sprintf("container <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.parameters.repos])
         }
+
         violation[{"msg": msg}] {
           container := input.review.object.spec.initContainers[_]
-          satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]
+          satisfied := [good | repo = allowedRepos ; good = startswith(container.image, repo)]
           not any(satisfied)
           msg := sprintf("container <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.parameters.repos])
         }
