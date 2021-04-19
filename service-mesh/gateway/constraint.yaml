@@ -3,7 +3,6 @@ kind: SecuredGateways
 metadata:
   name: secured-gateways
 spec:
-  enforcementAction: dryrun
   match:
     kinds:
       - apiGroups: ["networking.istio.io"]
