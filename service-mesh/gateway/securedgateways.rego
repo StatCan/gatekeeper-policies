@@ -85,6 +85,24 @@ violation[{"msg": msg}] {
 	msg := sprintf("CipherSuites must be defined from the following: %v", [input.parameters.approvedCipherSuites])
 }
 
+violation[{"msg": msg}] {
+	gateway := input.review.object
+	server := gateway.spec.servers[_]
+	
+	server.port.protocol == "HTTPS"
+	not server.tls.mode
+	msg := sprintf("TLS mode must be set to one of the following: %v", [input.parameters.tlsModes])
+}
+
+violation[{"msg": msg}] {
+	gateway := input.review.object
+	server := gateway.spec.servers[_]
+	
+	server.port.protocol == "HTTPS"
+	not contains(input.parameters.tlsModes, server.tls.mode)
+	msg := sprintf("TLS mode must be set to one of the following: %v", [input.parameters.tlsModes])
+}
+
 contains(array, string) {
 	array[_] == string
 }

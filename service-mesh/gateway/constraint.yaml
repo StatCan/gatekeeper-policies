@@ -17,4 +17,5 @@ spec:
       - ECDHE-ECDSA-AES128-GCM-SHA256
     maxTLSVersions: ["TLSV1_2"]
     minTLSVersions: ["TLSV1_2"]
+    tlsModes: ["SIMPLE"]
 
