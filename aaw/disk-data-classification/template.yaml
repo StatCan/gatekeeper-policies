@@ -1,0 +1,46 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: diskdataclassification
+spec:
+  crd:
+    spec:
+      names:
+        kind: DiskDataClassification
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package diskdataclassification
+
+        same(a, b) {
+          a == b
+        }
+
+        violation[{"msg": msg}] {
+          # Review pod disk mounts
+          pod := input.review.object
+
+          # Check volume is in the inventory
+          vol := pod.spec.volumes[_].persistentVolumeClaim.claimName
+
+          found := [found | pvc = data.inventory.namespace[pod.metadata.namespace]["v1"]["PersistentVolumeClaim"][_]; found = pvc.metadata.name == vol]
+          not any(found)
+
+          msg := sprintf("volume <%v> for pod <%v> not found in inventory", [vol, pod.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+          # Review pod disk mounts
+          pod := input.review.object
+
+          # Check volumes
+          vol := pod.spec.volumes[_].persistentVolumeClaim.claimName
+          pvc := data.inventory.namespace[pod.metadata.namespace]["v1"]["PersistentVolumeClaim"][vol]
+
+          # Ensure the data classification is the same
+          podclass := object.get(object.get(pod.metadata, "labels", {}), "data.statcan.gc.ca/classification", "unclassified")
+          pvcclass := object.get(object.get(pvc.metadata, "labels", {}), "data.statcan.gc.ca/classification", "unclassified")
+          not same(podclass, pvcclass)
+
+          msg := sprintf("volume <%v> data classification <%v> conflicts with pod <%v> data classification <%v>", [pvc.metadata.name, pvcclass, pod.metadata.name, podclass])
+        }

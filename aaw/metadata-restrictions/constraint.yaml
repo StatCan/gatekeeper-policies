@@ -1,0 +1,40 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MetadataRestrictions
+metadata:
+  name: classification
+spec:
+  parameters:
+    labels:
+      - key: data.statcan.gc.ca/classification
+        fallback: unclassified
+        immutable: true
+        allowedValues:
+          - unclassified
+          - protected-a
+          - protected-b
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MetadataRestrictions
+metadata:
+  name: kubeflow-profiles
+spec:
+  match:
+    namespaceSelector:
+      matchExpressions:
+        - key: app.kubernetes.io/part-of
+          operator: In
+          values: ["kubeflow-profile"]
+  parameters:
+    annotations:
+      - key: sidecar.istio.io/inject
+        fallback: 'true'
+        allowedValues:
+          - 'true'
+      - key: traffic.sidecar.istio.io/excludeOutboundPorts
+        allowedValues: []
+      - key: traffic.sidecar.istio.io/excludeOutboundIPRanges
+        allowedValues: []
+      - key: traffic.sidecar.istio.io/excludeInboundPorts
+        allowedValues: []
+      - key: traffic.sidecar.istio.io/excludeInboundIPRanges
+        allowedValues: []

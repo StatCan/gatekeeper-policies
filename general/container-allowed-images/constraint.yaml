@@ -1,193 +1,220 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: ContainerAllowedImages
 metadata:
-  name: container-allowed-images
+  name: kubeflow-profiles
 spec:
   match:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: app.kubernetes.io/part-of
+          operator: In
+          values: ["kubeflow-profile"]
   parameters:
     repos:
-      # StatCan Repository
-      - 'artifactory.cloud.statcan.ca/'
-      - 'k8scc01covidacr.azurecr.io/'
-      - 'k8scc01covidmlopsacr.azurecr.io/'
-      - 'statcan/'
+      # Primary notebooks repository
+      - 'artifacts.aaw.cloud.statcan.ca/notebooks'
+      - 'k8scc01covidacr.azurecr.io/' # temporary until decom.
 
-      # Temporary
-      - "owasp/zap2docker-stable:"
-      - "rabbitmq:"
-      - "openpolicyagent/"
-      - "octopusdeploy/octo"
-      - "lachlanevenson/k8s-helm:"
-      - "curlimages/curl"
-      - 'sylus/gitlab-ci'
-      - 'python'
-      - 'docker:'
-      - 'certbot/'
-      - 'aquasec/'
-      - 'docker.io/aquasec/'
-      - 'cachethq/docker:'
-      - 'docker.io/postgres:'
-      - 'bitnami/matomo'
-      - 'bitnami/matomo:'
-      - 'bitnami/kubectl'
-      - 'bitnami/kubectl:'
-      - 'bitnami/redis:'
-      - 'redis:'
-      - 'microsoft/mssql-server-linux:'
-      - 'postgres:'
-      - 'docker.io/bitnami/redis:'
-      - 'fluentd:'
-      - 'containous/whoami'
-      - 'docker.bintray.io/bitnami/postgresql:'
-      - 'docker.bintray.io/jfrog/'
-      - 'notary:'
-      - 'solr:'
-      - 'docker.io/bitnami/pgpool:'
-      - 'zookeeper:'
-      - 'govcloud/'
-      - 'jupyter/'
-      - 'jupyterhub/'
-      - 'quay.io/awesomenix/drainsafe-manager'
-      - 'gcr.io/google_samples/k8szk:v3'
-      - 'appropriate/curl'
-      - 'atlassian/'
-      - 'drupalwxt/'
-      - 'gitlab/'
-      - 'lucidworks/'
-      - 'hairyhenderson/'
-      - 'notary/'
-      - 'sqlpad/'
-      - 'k8s.gcr.io/'
-      - 'nginx'
-      - 'ubuntu:'
-      - 'kairen/rotate-elasticsearch-index'
+      # ML pipelines
+      - 'gcr.io/ml-pipeline/frontend:'
+      - 'gcr.io/ml-pipeline/visualization-server:'
 
-      # Base containers
-      - 'alpine:'
-      - 'library/alpine'
-      - 'bash:'
-      - 'library/bash'
-      - 'python:'
-      - 'library/python'
-      - 'continuumio/miniconda3'
-      - 'julia:'
-      - 'library/julia'
-      - 'sha256:'
-      - 'library/sha256'
-      - 'busybox'
-      - 'busybox:'
-      - 'library/busybox'
+      # Istio sidecar
+      - 'docker.io/istio/proxyv2:'
 
-      # App Identity
-      - 'ibmcloudsecurity/app-identity-and-access-adapter:'
+# apiVersion: constraints.gatekeeper.sh/v1beta1
+# kind: ContainerAllowedImages
+# metadata:
+#   name: container-allowed-images
+# spec:
+#   match:
+#     kinds:
+#       - apiGroups: [""]
+#         kinds: ["Pod"]
+#   parameters:
+#     repos:
+#       # StatCan Repository
+#       - 'artifactory.cloud.statcan.ca/'
+#       - 'k8scc01covidacr.azurecr.io/'
+#       - 'k8scc01covidmlopsacr.azurecr.io/'
+#       - 'statcan/'
 
-      # Istio
-      - 'istio/'
-      - 'docker.io/istio/'
-      - 'quay.io/kiali/'
+#       # Temporary
+#       - "owasp/zap2docker-stable:"
+#       - "rabbitmq:"
+#       - "openpolicyagent/"
+#       - "octopusdeploy/octo"
+#       - "lachlanevenson/k8s-helm:"
+#       - "curlimages/curl"
+#       - 'sylus/gitlab-ci'
+#       - 'python'
+#       - 'docker:'
+#       - 'certbot/'
+#       - 'aquasec/'
+#       - 'docker.io/aquasec/'
+#       - 'cachethq/docker:'
+#       - 'docker.io/postgres:'
+#       - 'bitnami/matomo'
+#       - 'bitnami/matomo:'
+#       - 'bitnami/kubectl'
+#       - 'bitnami/kubectl:'
+#       - 'bitnami/redis:'
+#       - 'redis:'
+#       - 'microsoft/mssql-server-linux:'
+#       - 'postgres:'
+#       - 'docker.io/bitnami/redis:'
+#       - 'fluentd:'
+#       - 'containous/whoami'
+#       - 'docker.bintray.io/bitnami/postgresql:'
+#       - 'docker.bintray.io/jfrog/'
+#       - 'notary:'
+#       - 'solr:'
+#       - 'docker.io/bitnami/pgpool:'
+#       - 'zookeeper:'
+#       - 'govcloud/'
+#       - 'jupyter/'
+#       - 'jupyterhub/'
+#       - 'quay.io/awesomenix/drainsafe-manager'
+#       - 'gcr.io/google_samples/k8szk:v3'
+#       - 'appropriate/curl'
+#       - 'atlassian/'
+#       - 'drupalwxt/'
+#       - 'gitlab/'
+#       - 'lucidworks/'
+#       - 'hairyhenderson/'
+#       - 'notary/'
+#       - 'sqlpad/'
+#       - 'k8s.gcr.io/'
+#       - 'nginx'
+#       - 'ubuntu:'
+#       - 'kairen/rotate-elasticsearch-index'
 
-      # Elastic
-      - 'docker.elastic.co/'
+#       # Base containers
+#       - 'alpine:'
+#       - 'library/alpine'
+#       - 'bash:'
+#       - 'library/bash'
+#       - 'python:'
+#       - 'library/python'
+#       - 'continuumio/miniconda3'
+#       - 'julia:'
+#       - 'library/julia'
+#       - 'sha256:'
+#       - 'library/sha256'
+#       - 'busybox'
+#       - 'busybox:'
+#       - 'library/busybox'
 
-      # Prometheus + Grafana
-      - 'prom/'
-      - 'docker.io/prom/'
-      - 'grafana/'
-      - 'kiwigrid/k8s-sidecar'
-      - 'quay.io/coreos/'
-      - 'quay.io/prometheus/'
-      - 'jettech/kube-webhook-certgen'
-      - 'docker.io/jimmidyson/configmap-reload'
-      - 'squareup/ghostunnel'
+#       # App Identity
+#       - 'ibmcloudsecurity/app-identity-and-access-adapter:'
 
-      # Cert manager
-      - 'quay.io/jetstack/'
+#       # Istio
+#       - 'istio/'
+#       - 'docker.io/istio/'
+#       - 'quay.io/kiali/'
 
-      # Open Policy Agent
-      - 'quay.io/open-policy-agent/'
-      - 'openpolicyagent/opa'
+#       # Elastic
+#       - 'docker.elastic.co/'
 
-      # Fluentd
-      - 'jvassev/kube-fluentd-operator'
+#       # Prometheus + Grafana
+#       - 'prom/'
+#       - 'docker.io/prom/'
+#       - 'grafana/'
+#       - 'kiwigrid/k8s-sidecar'
+#       - 'quay.io/coreos/'
+#       - 'quay.io/prometheus/'
+#       - 'jettech/kube-webhook-certgen'
+#       - 'docker.io/jimmidyson/configmap-reload'
+#       - 'squareup/ghostunnel'
 
-      # Hashicorp
-      - 'vault:'
-      - 'hashicorp/'
+#       # Cert manager
+#       - 'quay.io/jetstack/'
 
-      # Pachyderm
-      - 'pachyderm/'
+#       # Open Policy Agent
+#       - 'quay.io/open-policy-agent/'
+#       - 'openpolicyagent/opa'
 
-      # Helm (Tiller)
-      - 'gcr.io/kubernetes-helm/'
+#       # Fluentd
+#       - 'jvassev/kube-fluentd-operator'
 
-      # Velero
-      - 'gcr.io/heptio-images/'
+#       # Hashicorp
+#       - 'vault:'
+#       - 'hashicorp/'
 
-      # Kubecost
-      - 'gcr.io/kubecost1/'
-      - 'jimmidyson/configmap-reload:'
-      - 'quay.io/kubecost1/checks'
+#       # Pachyderm
+#       - 'pachyderm/'
 
-      # Kubeflow
-      - 'gcr.io/arrikto/kubeflow/'
-      - 'gcr.io/cloud-builders/'
-      - 'gcr.io/distroless/'
-      - 'gcr.io/istio-release/'
-      - 'gcr.io/google-containers/'
-      - 'gcr.io/google_containers/'
-      - 'gcr.io/kf-pipeline-contrib/'
-      - 'gcr.io/kfserving/'
-      - 'gcr.io/knative-releases/'
-      - 'gcr.io/kubebuilder/'
-      - 'gcr.io/kubeflow-ci/'
-      - 'gcr.io/kubeflow-images-public/'
-      - 'gcr.io/ml-pipeline/'
-      - 'gcr.io/spark-operator/'
-      - 'gcr.io/tekton-releases/'
-      - 'gcr.io/stackdriver-prometheus/'
-      - 'gcr.io/tfx-oss-public/'
-      - 'argoproj/'
-      - 'metacontroller/'
-      - 'seldonio/'
-      - 'tensorflow/'
-      - 'docker.io/kubeflowkatib/'
-      - 'docker.io/seldonio/'
-      - 'google/cloud-sdk'
+#       # Helm (Tiller)
+#       - 'gcr.io/kubernetes-helm/'
 
-      # Volcano
-      - 'docker.io/volcanosh/'
-      - 'volcanosh/'
+#       # Velero
+#       - 'gcr.io/heptio-images/'
 
-      # Data
-      - 'minio/'
-      - 'mysql:'
-      - 'bitnami/postgresql'
-      - 'bitnami/minideb'
-      - 'docker.io/bitnami/mariadb'
-      - 'docker.io/bitnami/postgresql'
-      - 'docker.io/bitnami/minideb'
-      - 'library/mongo'
+#       # Kubecost
+#       - 'gcr.io/kubecost1/'
+#       - 'jimmidyson/configmap-reload:'
+#       - 'quay.io/kubecost1/checks'
 
-      # Dremio
-      - 'dremio/'
-      - 'k8s.gcr.io/kubernetes-zookeeper'
+#       # Kubeflow
+#       - 'gcr.io/arrikto/kubeflow/'
+#       - 'gcr.io/cloud-builders/'
+#       - 'gcr.io/distroless/'
+#       - 'gcr.io/istio-release/'
+#       - 'gcr.io/google-containers/'
+#       - 'gcr.io/google_containers/'
+#       - 'gcr.io/kf-pipeline-contrib/'
+#       - 'gcr.io/kfserving/'
+#       - 'gcr.io/knative-releases/'
+#       - 'gcr.io/kubebuilder/'
+#       - 'gcr.io/kubeflow-ci/'
+#       - 'gcr.io/kubeflow-images-public/'
+#       - 'gcr.io/ml-pipeline/'
+#       - 'gcr.io/spark-operator/'
+#       - 'gcr.io/tekton-releases/'
+#       - 'gcr.io/stackdriver-prometheus/'
+#       - 'gcr.io/tfx-oss-public/'
+#       - 'argoproj/'
+#       - 'metacontroller/'
+#       - 'seldonio/'
+#       - 'tensorflow/'
+#       - 'docker.io/kubeflowkatib/'
+#       - 'docker.io/seldonio/'
+#       - 'google/cloud-sdk'
 
-      # Web servers
-      - 'nginx:'
+#       # Volcano
+#       - 'docker.io/volcanosh/'
+#       - 'volcanosh/'
 
-      # AKS
-      - 'deis/hcp-tunnel-front'
-      - 'mcr.microsoft.com/'
-      - 'nvidia/'
+#       # Data
+#       - 'minio/'
+#       - 'mysql:'
+#       - 'bitnami/postgresql'
+#       - 'bitnami/minideb'
+#       - 'docker.io/bitnami/mariadb'
+#       - 'docker.io/bitnami/postgresql'
+#       - 'docker.io/bitnami/minideb'
+#       - 'library/mongo'
 
-      # Velero
-      - 'velero'
+#       # Dremio
+#       - 'dremio/'
+#       - 'k8s.gcr.io/kubernetes-zookeeper'
 
-      # Utilities
-      - 'zachomedia/'
+#       # Web servers
+#       - 'nginx:'
 
-      # Apache Pulsar
-      - 'apachepulsar/'
+#       # AKS
+#       - 'deis/hcp-tunnel-front'
+#       - 'mcr.microsoft.com/'
+#       - 'nvidia/'
+
+#       # Velero
+#       - 'velero'
+
+#       # Utilities
+#       - 'zachomedia/'
+
+#       # Apache Pulsar
+#       - 'apachepulsar/'

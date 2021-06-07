@@ -22,14 +22,14 @@ kind: Kustomization
 # etc. that differ from the common base).
 bases:
   - container-allowed-images
-  - container-limits
-  - ingress-hostnames-conflict
-  - loadbalancer-no-public-ips
+  # - container-limits
+  # - ingress-hostnames-conflict
+  # - loadbalancer-no-public-ips
 
 # Each entry in this list must resolve to an existing
 # resource definition in YAML.  These are the resource
 # files that kustomize reads, modifies and emits as a
 # YAML string, with resources separated by document
 # markers ("---").
-resources:
-  - gatekeeper-opa-sync.yaml
+# resources:
+#   - gatekeeper-opa-sync.yaml

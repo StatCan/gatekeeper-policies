@@ -21,7 +21,6 @@ kind: Kustomization
 # crucial ways (image tags, a few server arguments,
 # etc. that differ from the common base).
 bases:
-- aaw
-- general
-# - pod-security-policy
-# - service-mesh
+  - disk-data-classification
+  - metadata-restrictions
+  - namespace-guardrails
