@@ -1,0 +1,47 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: denyextraction
+spec:
+  crd:
+    spec:
+      names:
+        kind: DenyExtraction
+      validation:
+        openAPIV3Schema:
+          properties:
+            podLabels:
+              type: array
+              items:
+                type: object
+                key: string
+                value: object
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package denyextraction
+
+        same(a, b) {
+          a == b
+        }
+
+        # If we can't load the pod metadata,
+        # then we need to reject the request since we can't confirm.
+        violation[{"msg": msg}] {
+          subResources := ["attach", "exec"]
+
+          not data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
+          msg := sprintf("blocking <%v>, cannot verify labels on pod <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
+        }
+
+        violation[{"msg": msg}] {
+          subResources := ["attach", "exec"]
+
+          pod := data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
+
+          label := input.parameters.podLabels[_]
+          matched := [found | found = pod.metadata.labels[label.key] == label.value; found]
+          count(matched) == count(input.parameters.podLabels)
+
+          msg := sprintf("forbidden action <%v> on <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
+        }

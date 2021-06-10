@@ -24,3 +24,4 @@ bases:
   - disk-data-classification
   - metadata-restrictions
   - namespace-guardrails
+  - deny-extraction
