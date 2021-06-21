@@ -1,23 +1,23 @@
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
-  name: probrstudioauth
+  name: probauth
 spec:
   crd:
     spec:
       names:
-        kind: ProBRstudioAuth
+        kind: ProBAuth
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
-        package probrstudioauth
+        package probauth
         violation[{"msg": msg}] {
           not input.review.object.metadata.labels["data.statcan.gc.ca/classification"] == "unclassified"
           input.review.object.kind == "Pod"
           ns := input.review.object.metadata.namespace
           namePod := input.review.object.metadata.name
           name := input.review.object.metadata.labels["notebook-name"]
-          authname := concat("-", [name, "rstudio-prob-block"])
+          authname := concat("-", [name, "prob-block"])
           not data.inventory.namespace[ns]["security.istio.io/v1beta1"]["AuthorizationPolicy"][authname]
-          msg := sprintf("Rstudio prob notebook does not have auth policy: %v", [namePod])
+          msg := sprintf("A prob notebook does not have auth policy: %v", [namePod])
         }
