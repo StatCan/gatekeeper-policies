@@ -25,3 +25,4 @@ bases:
   - metadata-restrictions
   - namespace-guardrails
   - deny-extraction
+  - deny-pipelines

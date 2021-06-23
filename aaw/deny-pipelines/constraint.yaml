@@ -1,0 +1,20 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: DenyPipelines
+metadata:
+  name: restrict-protected-b
+spec:
+  match:
+    namespaceSelector:
+      matchExpressions:
+        - key: app.kubernetes.io/part-of
+          operator: In
+          values: ["kubeflow-profile"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+        - key: data.statcan.gc.ca/classification
+          operator: In
+          values:
+            - protected-b
