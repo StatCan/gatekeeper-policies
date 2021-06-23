@@ -10,7 +10,6 @@ spec:
         immutable: true
         allowedValues:
           - unclassified
-          - protected-a
           - protected-b
 ---
 apiVersion: constraints.gatekeeper.sh/v1beta1
