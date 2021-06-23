@@ -15,7 +15,7 @@ spec:
   parameters:
     repos:
       # Primary notebooks repository
-      - 'artifacts.aaw.cloud.statcan.ca/notebooks'
+      - 'jfrog.aaw.cloud.statcan.ca/aaw-user-docker/'
       - 'k8scc01covidacr.azurecr.io/' # temporary until decom.
 
       # ML pipelines
