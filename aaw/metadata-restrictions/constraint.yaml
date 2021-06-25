@@ -15,14 +15,23 @@ spec:
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: MetadataRestrictions
 metadata:
-  name: kubeflow-profiles
+  name: enforce-protected-b-istio
 spec:
   match:
     namespaceSelector:
       matchExpressions:
-        - key: app.kubernetes.io/part-of
+        - key: istio-injection
           operator: In
-          values: ["kubeflow-profile"]
+          values: ["enabled"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+        - key: data.statcan.gc.ca/classification
+          operator: In
+          values:
+            - protected-b
   parameters:
     annotations:
       - key: sidecar.istio.io/inject
