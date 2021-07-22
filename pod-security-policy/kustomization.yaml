@@ -22,8 +22,8 @@ kind: Kustomization
 # etc. that differ from the common base).
 bases:
   - allow-privilege-escalation
-  # - apparmor
-  # - capabilities
+  - apparmor
+  - capabilities
   - flexvolume-drivers
   - forbidden-sysctls
   - fsgroup
@@ -33,7 +33,7 @@ bases:
   - privileged-containers
   - proc-mount
   - read-only-root-filesystem
-  # - seccomp
-  # - selinux
-  # - users
+  - seccomp
+  - selinux
+  - users
   - volumes
