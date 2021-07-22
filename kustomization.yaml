@@ -23,5 +23,5 @@ kind: Kustomization
 bases:
 - aaw
 - general
-# - pod-security-policy
-# - service-mesh
+- pod-security-policy
+- service-mesh
