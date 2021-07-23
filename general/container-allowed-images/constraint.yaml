@@ -24,6 +24,9 @@ spec:
 
       # Istio sidecar
       - 'docker.io/istio/proxyv2:'
+      
+      # Vault injector
+      - 'library/vault:'
 
 # apiVersion: constraints.gatekeeper.sh/v1beta1
 # kind: ContainerAllowedImages
