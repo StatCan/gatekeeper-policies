@@ -7,3 +7,9 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
+    labelSelector:
+      matchExpressions:
+        - key: data.statcan.gc.ca/classification
+          operator: In
+          values:
+            - protected-b

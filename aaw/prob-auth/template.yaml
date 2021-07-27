@@ -12,7 +12,6 @@ spec:
       rego: |
         package probauth
         violation[{"msg": msg}] {
-          input.review.object.metadata.labels["data.statcan.gc.ca/classification"] == "protected-b"
           input.review.object.kind == "Pod"
           ns := input.review.object.metadata.namespace
           namePod := input.review.object.metadata.name
