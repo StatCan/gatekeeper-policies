@@ -53,6 +53,7 @@ This repo contains a set of common policies that can be used to enforce specific
 
 | Control Aspect      | Gatekeeper Constraint Template                          |
 | ------------------- | ------------------------------------------------------- |
+| Gateway             | [gateway](service-mesh/gateway)                         |
 | Peer Authentication | [peer-authentication](service-mesh/peer-authentication) |
 | Port Naming         | [port-naming](service-mesh/port-naming)                 |
 | Traffic Policy      | [traffic-policy](service-mesh/traffic-policy)           |
