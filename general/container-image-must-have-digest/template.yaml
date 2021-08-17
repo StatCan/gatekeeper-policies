@@ -1,0 +1,44 @@
+# Copyright 2021 Open Policy Agent
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/master/library/general/imagedigests/template.yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: imagedigests
+  annotations:
+    description: Requires container images to contain a digest.
+spec:
+  crd:
+    spec:
+      names:
+        kind: ImageDigests
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package imagedigests
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          satisfied := [re_match("@[a-z0-9]+([+._-][a-z0-9]+)*:[a-zA-Z0-9=_-]+", container.image)]
+          not all(satisfied)
+          msg := sprintf("container <%v> uses an image without a digest <%v>", [container.name, container.image])
+        }
+
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.initContainers[_]
+          satisfied := [re_match("@[a-z0-9]+([+._-][a-z0-9]+)*:[a-zA-Z0-9=_-]+", container.image)]
+          not all(satisfied)
+          msg := sprintf("initContainer <%v> uses an image without a digest <%v>", [container.name, container.image])
+        }

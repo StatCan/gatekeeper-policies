@@ -21,19 +21,21 @@ kind: Kustomization
 # crucial ways (image tags, a few server arguments,
 # etc. that differ from the common base).
 bases:
-  - allow-privilege-escalation
-  # - apparmor
-  # - capabilities
+  - allowed-external-ips
+  - allowed-host-paths
+  - allowed-privilege-escalation
+  - allowed-proc-mount-types
+  - allowed-seccomp-profiles
+  - allowed-users-groups
+  - allowed-volume-types
+  - block-automount-token
+  - block-default-namespace
+  - block-host-namespace
+  - container-capabilities
+  - container-no-privilege-escalation
+  - enforce-apparmor-profile
   - flexvolume-drivers
-  - forbidden-sysctls
-  - fsgroup
-  - host-filesystem
-  - host-namespaces
+  - forbidden-sysctls-interfaces
   - host-network-ports
-  - privileged-containers
-  - proc-mount
   - read-only-root-filesystem
-  # - seccomp
-  # - selinux
-  # - users
-  - volumes
+  - selinux

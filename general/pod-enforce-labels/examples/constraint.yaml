@@ -1,0 +1,15 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/pod-enforce-labels/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PodEnforceLabels
+metadata:
+  name: pod-enforce-labels
+spec:
+  match:
+    excludedNamespaces: ["istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    labels:
+    - app
+    - version

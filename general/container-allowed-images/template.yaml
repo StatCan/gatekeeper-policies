@@ -1,7 +1,10 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/container-allowed-images/template.yaml
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   name: containerallowedimages
+  annotations:
+    description: Grants approval to pull container images against a list of allowed image repositories.
 spec:
   crd:
     spec:
@@ -10,6 +13,7 @@ spec:
       validation:
         # Schema for the `parameters` field
         openAPIV3Schema:
+          type: object
           properties:
             repos:
               type: array
@@ -26,6 +30,7 @@ spec:
           not any(satisfied)
           msg := sprintf("container <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.parameters.repos])
         }
+
         violation[{"msg": msg}] {
           container := input.review.object.spec.initContainers[_]
           satisfied := [good | repo = input.parameters.repos[_] ; good = startswith(container.image, repo)]

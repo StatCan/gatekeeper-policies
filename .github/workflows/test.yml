@@ -1,0 +1,71 @@
+name: 'GateKeeper Policies'
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  BATS_VERSION: 1.3.0
+  GATEKEEPER_VERSION: 3.5.2
+  K3D_VERSION: 4.4.7
+  KUBECTL_VERSION: 1.21.2
+  KUSTOMIZE_VERSION: 4.1.3
+  ISTIO_VERSION: 1.7.4
+
+jobs:
+  test:
+    name: 'Test'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Create the k3d cluster
+      run: |
+        mkdir -p ${GITHUB_WORKSPACE}/bin/
+
+        # install kubectl
+        curl -L https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl -o ${GITHUB_WORKSPACE}/bin/kubectl && chmod +x ${GITHUB_WORKSPACE}/bin/kubectl
+
+        # install kustomize
+        curl -L https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -o kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && tar -zxvf kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz && chmod +x kustomize && mv kustomize ${GITHUB_WORKSPACE}/bin/kustomize
+
+        # install bats
+        curl -sSLO https://github.com/bats-core/bats-core/archive/v${BATS_VERSION}.tar.gz && tar -zxvf v${BATS_VERSION}.tar.gz && bash bats-core-${BATS_VERSION}/install.sh ${GITHUB_WORKSPACE} && rm -rf bats-core-${BATS_VERSION}
+
+        # install k3d
+        curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
+
+        # install yq
+        sudo snap install yq
+
+    - name: Start the k3d cluster
+      run: |
+        TERM=dumb k3d cluster create test
+        kubectl config use-context k3d-test
+
+    - name: Deploy Istio
+      run: |
+        curl -L https://istio.io/downloadIstio | ISTIO_VERSION=${ISTIO_VERSION} sh -
+        $PWD/istio-${ISTIO_VERSION}/bin/istioctl install --set profile=demo
+        rm -rf $PWD/istio-${ISTIO_VERSION}
+
+    - name: Deploy Gatekeeper
+      run: |
+        # install gatekeeper
+        kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v${GATEKEEPER_VERSION}/deploy/gatekeeper.yaml
+        kubectl -n gatekeeper-system wait --for=condition=Ready --timeout=60s pod -l control-plane=controller-manager
+
+    - name: Test ConstraintsTemplates
+      run: |
+        ${GITHUB_WORKSPACE}/bin/bats -t tests/test.bats
+
+    - name: Destroy the k3d cluster
+      run: |
+        k3d cluster delete test

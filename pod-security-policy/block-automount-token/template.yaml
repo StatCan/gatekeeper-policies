@@ -1,0 +1,24 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/block-automount-token/template.yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: blockautomounttoken
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlockAutomountToken
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package blockautomounttoken
+
+        violation[{"msg": msg}] {
+          obj := input.review.object
+          not valid_service_account(obj.spec)
+          msg := sprintf("Automounting service account token is disallowed, pod: %v", [obj.metadata.name])
+        }
+
+        valid_service_account(spec) {
+          spec.automountServiceAccountToken == false
+        }

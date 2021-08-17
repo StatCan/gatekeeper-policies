@@ -1,0 +1,90 @@
+# Copyright 2021 Open Policy Agent
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/master/library/pod-security-policy/proc-mount/template.yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: pspprocmount
+  annotations:
+    description: Controls the allowed `procMount` types for the container.
+spec:
+  crd:
+    spec:
+      names:
+        kind: PSPProcMount
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          properties:
+            procMount:
+              type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package pspprocmount
+
+        violation[{"msg": msg, "details": {}}] {
+            c := input_containers[_]
+            allowedProcMount := get_allowed_proc_mount(input)
+            not input_proc_mount_type_allowed(allowedProcMount, c)
+            msg := sprintf("ProcMount type is not allowed, container: %v. Allowed procMount types: %v", [c.name, allowedProcMount])
+        }
+
+        input_proc_mount_type_allowed(allowedProcMount, c) {
+            allowedProcMount == "default"
+            lower(c.securityContext.procMount) == "default"
+        }
+
+        input_proc_mount_type_allowed(allowedProcMount, c) {
+            allowedProcMount == "unmasked"
+        }
+
+        input_containers[c] {
+            c := input.review.object.spec.containers[_]
+            c.securityContext.procMount
+        }
+
+        input_containers[c] {
+            c := input.review.object.spec.initContainers[_]
+            c.securityContext.procMount
+        }
+
+        get_allowed_proc_mount(arg) = out {
+            not arg.parameters
+            out = "default"
+        }
+
+        get_allowed_proc_mount(arg) = out {
+            not arg.parameters.procMount
+            out = "default"
+        }
+
+        get_allowed_proc_mount(arg) = out {
+            not valid_proc_mount(arg.parameters.procMount)
+            out = "default"
+        }
+
+        get_allowed_proc_mount(arg) = out {
+            out = lower(arg.parameters.procMount)
+        }
+
+        valid_proc_mount(str) {
+            lower(str) == "default"
+        }
+
+        valid_proc_mount(str) {
+            lower(str) == "unmasked"
+        }

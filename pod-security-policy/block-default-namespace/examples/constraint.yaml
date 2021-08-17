@@ -1,0 +1,10 @@
+# https://github.com/Azure/azure-policy/blob/master/built-in-references/Kubernetes/block-default-namespace/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PSPBlockDefault
+metadata:
+  name: block-default-namespace
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["ConfigMap", "Pod", "Secret", "Service", "ServiceAccount"]

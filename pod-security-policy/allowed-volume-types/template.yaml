@@ -1,0 +1,55 @@
+# Copyright 2021 Open Policy Agent
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/master/library/pod-security-policy/volumes/template.yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: pspvolumetypes
+  annotations:
+    description: Controls usage of volume types.
+spec:
+  crd:
+    spec:
+      names:
+        kind: PSPVolumeTypes
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          type: object
+          properties:
+            volumes:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package pspvolumetypes
+
+        violation[{"msg": msg, "details": {}}] {
+          volume_fields := {x | input.review.object.spec.volumes[_][x]; x != "name"}
+          field := volume_fields[_]
+          not input_volume_type_allowed(field)
+          msg := sprintf("The volume type %v is not allowed, pod: %v. Allowed volume types: %v", [field, input.review.object.metadata.name, input.parameters.volumes])
+        }
+
+        # * may be used to allow all volume types
+        input_volume_type_allowed(field) {
+          input.parameters.volumes[_] == "*"
+        }
+
+        input_volume_type_allowed(field) {
+          field == input.parameters.volumes[_]
+        }

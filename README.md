@@ -1,73 +1,64 @@
 # GateKeeper Policies
 
-Policies that are to be enforced by GateKeeper for the Kubernetes Platform.
+Policies that are to be enforced by [GateKeeper](https://github.com/open-policy-agent/gatekeeper) for the Kubernetes Platform.
 
 > Note: Gatekeeper is a validating / mutating webhook that enforces CRD-based policies executed by the Open Policy Agent.
 
 ## General
 
-This repo contains common policies that can be used to enforce specific Kubernetes features.
+This repo contains general policies that can be used to enforce common Kubernetes requirements.
 
-| Control Aspect              | Field Names in K8S   | Gatekeeper Constraint and Constraint Template                    |
-|-----------------------------|----------------------|------------------------------------------------------------------|
-| Container Allowed Images    | `spec.peers`         | [container-allowed-images](general/container-allowed-images)     |
-| Contaienr Limits            | `service.spec.ports` | [container-limits](general/container-limits)                     |
-| Ingress Hostnames Conflict  | `spec.trafficPolicy` | [ingress-hostnames-conflict](general/ingress-hostnames-conflict) |
-| Load Balancer No Public IPs | `spec.trafficPolicy` | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips) |
+| Control Aspect                   | Gatekeeper Constraint Template                                               |
+| -------------------------------- | ---------------------------------------------------------------------------- |
+| Container Allowed Images         | [container-allowed-images](general/container-allowed-images)                 |
+| Container Image Must Have Digest | [container-image-must-have-digest](general/container-image-must-have-digest) |
+| Container Limits                 | [container-limits](general/container-limits)                                 |
+| Ingress Hostnames Conflict       | [ingress-hostnames-conflict](general/ingress-hostnames-conflict)             |
+| Load Balancer No Public IPs      | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips)             |
+| Pod Enforce Labels               | [pod-enforce-labels](general/pod-enforce-labels)                             |
 
 ## Pod Security Policies
 
-This repo contains common policies needed in Pod Security Policy but implemented as Constraints and Constraint Templates with Gatekeeper.
+This repo contains common policies replacing the deprecated `PodSecurityPolicy` into Constraint Templates using [GateKeeper](https://github.com/open-policy-agent/gatekeeper).
 
-A [Pod Security Policy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) is a cluster-level resource that controls security
-sensitive aspects of the pod specification. The `PodSecurityPolicy` objects define a set of conditions that a pod must run with in order to be accepted into the system, as well as defaults for the related fields.
-
-An administrator can control the following by setting the field in PSP or by deploying the corresponding Gatekeeper constraint and constraint templates:
-
-| Control Aspect                                    | Field Names in PSP                                                          | Gatekeeper Constraint and Constraint Template                                |
-|---------------------------------------------------|-----------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| Running of privileged containers                  | `privileged`                                                                | [privileged-containers](pod-security-policy/privileged-containers)           |
-| Usage of host namespaces                          | `hostPID`, `hostIPC`                                                        | [host-namespaces](pod-security-policy/host-namespaces)                       |
-| Usage of host networking and ports                | `hostNetwork`, `hostPorts`                                                  | [host-network-ports](pod-security-policy/host-network-ports)                 |
-| Usage of volume types                             | `volumes`                                                                   | [volumes](pod-security-policy/volumes)                                       |
-| Usage of the host filesystem                      | `allowedHostPaths`                                                          | [host-filesystem](pod-security-policy/host-filesystem)                       |
-| White list of Flexvolume drivers                  | `allowedFlexVolumes`                                                        | [flexvolume-drivers](pod-security-policy/flexvolume-drivers)                 |
-| Allocating an FSGroup that owns the pod's volumes | `fsGroup`                                                                   | [fsgroup](pod-security-policy/fsgroup)                                       |
-| Requiring the use of a read only root file system | `readOnlyRootFilesystem`                                                    | [read-only-root-filesystem](pod-security-policy/read-only-root-filesystem)   |
-| The user and group IDs of the container           | `runAsUser`, `runAsGroup`, `supplementalGroups`                             | [users](pod-security-policy/users)                                           |
-| Restricting escalation to root privileges         | `allowPrivilegeEscalation`, `defaultAllowPrivilegeEscalation`               | [allow-privilege-escalation](pod-security-policy/allow-privilege-escalation) |
-| Linux capabilities                                | `defaultAddCapabilities`, `requiredDropCapabilities`, `allowedCapabilities` | [capabilities](pod-security-policy/capabilities)                             |
-| The SELinux context of the container              | `seLinux`                                                                   | [seLinux](pod-security-policy/selinux)                                       |
-| The Allowed Proc Mount types for the container    | `allowedProcMountTypes`                                                     | [proc-mount](pod-security-policy/proc-mount)                                 |
-| The AppArmor profile used by containers           | annotations                                                                 | [apparmor](pod-security-policy/apparmor)                                     |
-| The seccomp profile used by containers            | annotations                                                                 | [seccomp](pod-security-policy/seccomp)                                       |
-| The sysctl profile used by containers             | `forbiddenSysctls`,`allowedUnsafeSysctls`                                   | [forbidden-sysctls](pod-security-policy/forbidden-sysctls)                   |
+| Control Aspect                     | Gatekeeper Constraint Template                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| Allowed external ips               | [allowed-external-ips](pod-security-policy/allowed-external-ips)                           |
+| Allowed host paths                 | [allowed-host-paths](pod-security-policy/allowed-host-paths)                               |
+| Allowed privilege escalation       | [allowed-privilege-escalation](pod-security-policy/allowed-privilege-escalation)           |
+| Allowed proc mount types           | [allowed-proc-mount-types](pod-security-policy/allowed-proc-mount-types)                   |
+| Allowed seccomp profiles           | [allowed-seccomp-profiles](pod-security-policy/allowed-seccomp-profiles)                   |
+| Allowed users and groups           | [allowed-users-groups](pod-security-policy/allowed-users-groups)                           |
+| Allowed volume types               | [allowed-volume-types](pod-security-policy/allowed-volume-types)                           |
+| Block automount token              | [block-automount-token](pod-security-policy/block-automount-token)                         |
+| Block default namespace            | [block-default-namespace](pod-security-policy/block-default-namespace)                     |
+| Block host namespace               | [block-host-namespace](pod-security-policy/block-host-namespace)                           |
+| Container capabilities             | [container-capabilities](pod-security-policy/container-capabilities)                       |
+| Container no privilege escalation  | [container-no-privilege-escalation](pod-security-policy/container-no-privilege-escalation) |
+| Enforce apparmor profile           | [enforce-apparmor-profile](pod-security-policy/enforce-apparmor-profile)                   |
+| Flexvolume drivers                 | [flexvolume-drivers](pod-security-policy/flexvolume-drivers)                               |
+| Forbidden sysctls                  | [forbidden-sysctls](pod-security-policy/forbidden-sysctls-interfaces)                      |
+| Host networking and ports          | [host-network-ports](pod-security-policy/host-network-ports)                               |
+| Require read only root file system | [read-only-root-filesystem](pod-security-policy/read-only-root-filesystem)                 |
+| SELinux context of the container   | [seLinux](pod-security-policy/selinux)                                                     |
 
 ## Service Mesh
 
 This repo contains a set of common policies that can be used to enforce specific Service Mesh features.
 
-| Control Aspect      | Field Names in Mesh  | Gatekeeper Constraint and Constraint Template           |
-|---------------------|----------------------|---------------------------------------------------------|
-| Peer Authentication | `spec.peers`         | [peer-authentication](service-mesh/peer-authentication) |
-| Port Naming         | `service.spec.ports` | [port-naming](service-mesh/port-naming)                 |
-| Traffic Policy      | `spec.trafficPolicy` | [traffic-policy](service-mesh/traffic-policy)           |
-
-## Commands
-
-A helpful command to list all of the known container images in the cluster is given below:
-
-```sh
-kubectl get pod -o json -A | jq -r '.items[].spec.containers[].image' | sed -E 's/(.*):.*/\1/g' | sort -u
-```
+| Control Aspect      | Gatekeeper Constraint Template                          |
+| ------------------- | ------------------------------------------------------- |
+| Peer Authentication | [peer-authentication](service-mesh/peer-authentication) |
+| Port Naming         | [port-naming](service-mesh/port-naming)                 |
+| Traffic Policy      | [traffic-policy](service-mesh/traffic-policy)           |
 
 ## Links
 
-* [Rego Playground](https://play.openpolicyagent.org/)
+- [Rego Playground](https://play.openpolicyagent.org/)
 
 ## Acknowledgements
 
-A lot of our policies were initially derived from the following sources:
-
-* [Anthos](https://github.com/GoogleCloudPlatform/acm-policy-controller-library)
-* [GateKeeper](https://github.com/open-policy-agent/gatekeeper/tree/master/library)
+- [Anthos](https://github.com/GoogleCloudPlatform/acm-policy-controller-library)
+- [Azure Policy](https://github.com/Azure/azure-policy/tree/master/built-in-references/Kubernetes)
+- [Community Policy](https://github.com/Azure/Community-Policy)
+- [Open Policy Agent](https://github.com/open-policy-agent/gatekeeper-library)

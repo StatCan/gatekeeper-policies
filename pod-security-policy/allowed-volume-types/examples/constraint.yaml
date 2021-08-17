@@ -1,0 +1,37 @@
+# Copyright 2021 Open Policy Agent
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/master/library/pod-security-policy/volumes/samples/psp-volume-types/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: PSPVolumeTypes
+metadata:
+  name: psp-volume-types
+spec:
+  match:
+    excludedNamespaces: ["kube-system", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    volumes:
+    # - "*" # * may be used to allow all volume types
+    - configMap
+    - emptyDir
+    - projected
+    - secret
+    - downwardAPI
+    - persistentVolumeClaim
+    # - hostPath
+    - flexVolume
+    - azureFile

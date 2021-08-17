@@ -1,9 +1,0 @@
-apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: IngressHostnamesConflict
-metadata:
-  name: ingress-hostnames-conflict
-spec:
-  match:
-    kinds:
-      - apiGroups: ["extensions", "networking.k8s.io"]
-        kinds: ["Ingress"]

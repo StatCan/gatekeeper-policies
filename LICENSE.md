@@ -8,6 +8,15 @@ Copyright title to all 3rd party software distributed with this repository is he
 
 ## MIT License
 
+Copyright (c) for portions of project are documented inline and held by the
+following people:
+
+* 2021, Google LLC (https://github.com/GoogleCloudPlatform/acm-policy-controller-library)
+* 2021, Microsoft Corporation (https://github.com/Azure/azure-policy)
+* 2021, Open Policy Agent (https://github.com/open-policy-agent/gatekeeper-library)
+
+All other copyright (c) is held by:
+
 Copyright (c) 2020 Government of Canada - Gouvernement du Canada
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

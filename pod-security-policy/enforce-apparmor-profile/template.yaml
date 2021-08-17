@@ -1,0 +1,56 @@
+# Copyright 2021 Open Policy Agent
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# https://raw.githubusercontent.com/open-policy-agent/gatekeeper-library/master/library/pod-security-policy/apparmor/template.yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: pspapparmor
+spec:
+  crd:
+    spec:
+      names:
+        kind: PSPAppArmor
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            allowedProfiles:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package pspapparmor
+
+        violation[{"msg": msg, "details": {}}] {
+            metadata := input.review.object.metadata
+            container := input_containers[_]
+            not input_apparmor_allowed(container, metadata)
+            msg := sprintf("AppArmor profile is not allowed, pod: %v, container: %v. Allowed profiles: %v", [input.review.object.metadata.name, container.name, input.parameters.allowedProfiles])
+        }
+
+        input_apparmor_allowed(container, metadata) {
+            metadata.annotations[key] == input.parameters.allowedProfiles[_]
+            key == sprintf("container.apparmor.security.beta.kubernetes.io/%v", [container.name])
+        }
+
+        input_containers[c] {
+            c := input.review.object.spec.containers[_]
+        }
+
+        input_containers[c] {
+            c := input.review.object.spec.initContainers[_]
+        }

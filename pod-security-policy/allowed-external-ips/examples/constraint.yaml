@@ -1,0 +1,13 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/allowed-external-ips/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ExternalIPs
+metadata:
+  name: psp-external-ips
+spec:
+  match:
+    excludedNamespaces: ["kube-system", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Service"]
+  parameters:
+    allowedExternalIPs: "203.0.113.0"

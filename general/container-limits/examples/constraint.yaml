@@ -1,0 +1,14 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/container-resource-limits/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ContainerLimits
+metadata:
+  name: container-limits
+spec:
+  match:
+    excludedNamespaces: ["kube-system", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    cpu: "200m"
+    memory: "1Gi"

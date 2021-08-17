@@ -1,0 +1,15 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/container-allowed-images/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ContainerAllowedImages
+metadata:
+  name: container-allowed-images
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "default"
+  parameters:
+    repos:
+      - "openpolicyagent/"

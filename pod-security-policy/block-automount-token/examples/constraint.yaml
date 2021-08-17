@@ -1,0 +1,11 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/block-automount-token/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlockAutomountToken
+metadata:
+  name: block-automount
+spec:
+  match:
+    excludedNamespaces: ["kube-system", "istio-system"]
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]

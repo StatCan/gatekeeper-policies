@@ -1,7 +1,10 @@
+# https://raw.githubusercontent.com/Azure/azure-policy/master/built-in-references/Kubernetes/container-resource-limits/template.yaml
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   name: containerlimits
+  annotations:
+    description: Requires that containers have both a cpu and memory limit set to a given maximum.
 spec:
   crd:
     spec:
@@ -10,6 +13,7 @@ spec:
       validation:
         # Schema for the `parameters` field
         openAPIV3Schema:
+          type: object
           properties:
             cpu:
               type: string
