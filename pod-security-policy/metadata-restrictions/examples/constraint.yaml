@@ -1,0 +1,13 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: MetadataRestrictions
+metadata:
+  name: classification
+spec:
+  parameters:
+    labels:
+      - key: data.statcan.gc.ca/classification
+        fallback: unclassified
+        immutable: true
+        allowedValues:
+          - unclassified
+          - protected-b

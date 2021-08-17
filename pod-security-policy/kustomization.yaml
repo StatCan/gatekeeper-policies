@@ -33,9 +33,14 @@ bases:
   - block-host-namespace
   - container-capabilities
   - container-no-privilege-escalation
+  - deny-extraction
+  - deny-pipelines
+  - disk-data-classification
   - enforce-apparmor-profile
   - flexvolume-drivers
   - forbidden-sysctls-interfaces
   - host-network-ports
+  - metadata-restrictions
+  - namespace-guardrails
   - read-only-root-filesystem
   - selinux

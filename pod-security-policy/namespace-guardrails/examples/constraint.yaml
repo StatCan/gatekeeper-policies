@@ -1,0 +1,29 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: NamespaceGuardrails
+metadata:
+  name: kubeflow-profiles
+spec:
+  match:
+    kinds:
+      # Prevent the following objects from
+      # being created when the below
+      # objects are not present in the
+      # namespace.
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - key: app.kubernetes.io/part-of
+          operator: In
+          values: ["kubeflow-profile"]
+  parameters:
+    objects:
+      - groupVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        name: default-deny
+      - groupVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        name: default-allow-core-system
+      - groupVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        name: notebooks-unclassified-allow-egress

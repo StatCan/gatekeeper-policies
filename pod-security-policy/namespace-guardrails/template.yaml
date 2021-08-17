@@ -1,0 +1,35 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: namespaceguardrails
+spec:
+  crd:
+    spec:
+      names:
+        kind: NamespaceGuardrails
+      validation:
+        openAPIV3Schema:
+          properties:
+            objects:
+              type: array
+              items:
+                type: object
+                groupVersion: string
+                kind: string
+                name: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package namespaceguardrails
+
+        # Ensure defined objects are present
+        violation[{"msg": msg}] {
+          pod := input.review.object
+
+          # Ensure default network
+          obj := input.parameters.objects[_]
+          found := [found | found = data.inventory.namespace[pod.metadata.namespace][obj.groupVersion][obj.kind][_].metadata.name == obj.name]
+          not any(found)
+
+          msg := sprintf("namespace <%v> does not contain a <%v.%v> named <%v>", [pod.metadata.namespace, obj.groupVersion, obj.kind, obj.name])
+        }

@@ -26,7 +26,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Create the k3d cluster
+    - name: Gather dependencies
       run: |
         mkdir -p ${GITHUB_WORKSPACE}/bin/
 
@@ -45,7 +45,7 @@ jobs:
         # install yq
         sudo snap install yq
 
-    - name: Start the k3d cluster
+    - name: Create the k3d cluster
       run: |
         TERM=dumb k3d cluster create test
         kubectl config use-context k3d-test

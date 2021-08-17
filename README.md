@@ -35,11 +35,16 @@ This repo contains common policies replacing the deprecated `PodSecurityPolicy` 
 | Block host namespace               | [block-host-namespace](pod-security-policy/block-host-namespace)                           |
 | Container capabilities             | [container-capabilities](pod-security-policy/container-capabilities)                       |
 | Container no privilege escalation  | [container-no-privilege-escalation](pod-security-policy/container-no-privilege-escalation) |
+| Deny extraction                    | [deny-extraction](pod-security-policy/deny-extraction)                                     |
+| Deny pipelines                     | [deny-pipelines](pod-security-policy/deny-pipelines)                                       |
+| Disk data classification           | [disk-data-classification](pod-security-policy/disk-data-classification)                   |
 | Enforce apparmor profile           | [enforce-apparmor-profile](pod-security-policy/enforce-apparmor-profile)                   |
 | Flexvolume drivers                 | [flexvolume-drivers](pod-security-policy/flexvolume-drivers)                               |
 | Forbidden sysctls                  | [forbidden-sysctls](pod-security-policy/forbidden-sysctls-interfaces)                      |
 | Host networking and ports          | [host-network-ports](pod-security-policy/host-network-ports)                               |
 | Require read only root file system | [read-only-root-filesystem](pod-security-policy/read-only-root-filesystem)                 |
+| Metadata restrictions              | [metadata-restrictions](pod-security-policy/metadata-restrictions)                         |
+| Namespace guardrails               | [namespace-guardrails](pod-security-policy/namespace-guardrails)                           |
 | SELinux context of the container   | [seLinux](pod-security-policy/selinux)                                                     |
 
 ## Service Mesh
