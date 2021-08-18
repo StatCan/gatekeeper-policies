@@ -21,3 +21,6 @@ spec:
       - group: "networking.k8s.io"
         version: "v1beta1"
         kind: "Ingress"
+      - group: "security.istio.io"
+        version: "v1beta1"
+        kind: "AuthorizationPolicy"

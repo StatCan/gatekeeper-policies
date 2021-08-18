@@ -42,6 +42,7 @@ This repo contains common policies replacing the deprecated `PodSecurityPolicy` 
 | Flexvolume drivers                 | [flexvolume-drivers](pod-security-policy/flexvolume-drivers)                               |
 | Forbidden sysctls                  | [forbidden-sysctls](pod-security-policy/forbidden-sysctls-interfaces)                      |
 | Host networking and ports          | [host-network-ports](pod-security-policy/host-network-ports)                               |
+| Protected B Auth                   | [protectedb-auth](pod-security-policy/protectedb-auth)                                     |
 | Require read only root file system | [read-only-root-filesystem](pod-security-policy/read-only-root-filesystem)                 |
 | Metadata restrictions              | [metadata-restrictions](pod-security-policy/metadata-restrictions)                         |
 | Namespace guardrails               | [namespace-guardrails](pod-security-policy/namespace-guardrails)                           |

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: protectedbauthb-auth-disallowed
+  labels:
+    notebook-name: notebook-test
+    data.statcan.gc.ca/classification: protected-b
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "30Mi"
