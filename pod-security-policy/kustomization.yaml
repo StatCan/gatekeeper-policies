@@ -41,7 +41,7 @@ bases:
   - forbidden-sysctls-interfaces
   - host-network-ports
   - metadata-restrictions
-  - protected-bauth
+  - protectedb-auth
   - namespace-guardrails
   - read-only-root-filesystem
   - selinux
