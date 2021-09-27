@@ -1,0 +1,41 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: ingressnohostnames
+spec:
+  crd:
+    spec:
+      names:
+        kind: IngressNoHostnames
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package ingressnohostnames
+
+        missing(obj, field) = true {
+          not obj[field]
+        }
+
+        missing(obj, field) = true {
+          obj[field] == ""
+        }
+
+        missing(obj, field) = true {
+          obj[field] == null
+        }
+
+        ingress_hosts[{"msg":msg}] {
+          input.review.kind.kind == "Ingress"
+          re_match("^(extensions|networking.k8s.io)$", input.review.kind.group)
+          not missing(input.review.object.spec, "backend")
+
+          msg := "spec.backend is not allowed"
+        }
+
+        ingress_hosts[{"msg":msg}] {
+          input.review.kind.kind == "Ingress"
+          re_match("^(extensions|networking.k8s.io)$", input.review.kind.group)
+          missing(input.review.object.spec.rules[_], "host")
+
+          msg := "spec.rules.host must be defined"
+        }
