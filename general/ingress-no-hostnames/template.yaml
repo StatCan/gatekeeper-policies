@@ -24,6 +24,10 @@ spec:
           obj[field] == null
         }
 
+        violation[{"msg": msg}] {
+          ingress_hosts[{"msg":msg}]
+        }
+
         ingress_hosts[{"msg":msg}] {
           input.review.kind.kind == "Ingress"
           re_match("^(extensions|networking.k8s.io)$", input.review.kind.group)
