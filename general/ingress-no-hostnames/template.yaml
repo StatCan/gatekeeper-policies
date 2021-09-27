@@ -25,20 +25,18 @@ spec:
         }
 
         violation[{"msg": msg}] {
+          input.review.kind.kind == "Ingress"
+          re_match("^(extensions|networking.k8s.io)$", input.review.kind.group)
           ingress_hosts[{"msg":msg}]
         }
 
         ingress_hosts[{"msg":msg}] {
-          input.review.kind.kind == "Ingress"
-          re_match("^(extensions|networking.k8s.io)$", input.review.kind.group)
           not missing(input.review.object.spec, "backend")
 
           msg := "spec.backend is not allowed"
         }
 
         ingress_hosts[{"msg":msg}] {
-          input.review.kind.kind == "Ingress"
-          re_match("^(extensions|networking.k8s.io)$", input.review.kind.group)
           missing(input.review.object.spec.rules[_], "host")
 
           msg := "spec.rules.host must be defined"
