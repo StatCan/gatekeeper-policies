@@ -11,7 +11,7 @@ spec:
         openAPIV3Schema:
           properties:
             objects:
-              type: array
+              type: object
               items:
                 type: object
                 groupVersion: string
