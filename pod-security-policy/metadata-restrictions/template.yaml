@@ -9,6 +9,7 @@ spec:
         kind: MetadataRestrictions
       validation:
         openAPIV3Schema:
+          type: object
           properties:
             annotations:
               type: array
