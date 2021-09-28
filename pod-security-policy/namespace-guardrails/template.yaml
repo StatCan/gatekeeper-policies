@@ -9,9 +9,10 @@ spec:
         kind: NamespaceGuardrails
       validation:
         openAPIV3Schema:
+          type: object
           properties:
             objects:
-              type: object
+              type: array
               items:
                 type: object
                 groupVersion: string
