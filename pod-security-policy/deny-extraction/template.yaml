@@ -9,6 +9,7 @@ spec:
         kind: DenyExtraction
       validation:
         openAPIV3Schema:
+          type: object
           properties:
             podLabels:
               type: array
