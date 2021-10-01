@@ -23,8 +23,9 @@ spec:
                   immutable:
                     type: boolean
                   allowedValues:
-                    type: list
-                    items: string
+                    type: array
+                    items:
+                      type: string
             labels:
               type: array
               items:
@@ -37,8 +38,9 @@ spec:
                   immutable:
                     type: boolean
                   allowedValues:
-                    type: list
-                    items: string
+                    type: array
+                    items:
+                      type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
