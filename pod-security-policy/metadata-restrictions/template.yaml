@@ -15,28 +15,30 @@ spec:
               type: array
               items:
                 type: object
-                key:
-                  type: string
-                fallback:
-                  type: string
-                immutable:
-                  type: boolean
-                allowedValues:
-                  type: list
-                  items: string
+                properties:
+                  key:
+                    type: string
+                  fallback:
+                    type: string
+                  immutable:
+                    type: boolean
+                  allowedValues:
+                    type: list
+                    items: string
             labels:
               type: array
               items:
                 type: object
-                key:
-                  type: string
-                fallback:
-                  type: string
-                immutable:
-                  type: boolean
-                allowedValues:
-                  type: list
-                  items: string
+                properties:
+                  key:
+                    type: string
+                  fallback:
+                    type: string
+                  immutable:
+                    type: boolean
+                  allowedValues:
+                    type: list
+                    items: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |

@@ -15,8 +15,11 @@ spec:
               type: array
               items:
                 type: object
-                key: string
-                value: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
