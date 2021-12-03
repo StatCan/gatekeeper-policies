@@ -28,3 +28,4 @@ bases:
   - ingress-no-hostnames
   - loadbalancer-no-public-ips
   - pod-enforce-labels
+  - restrict-hostnames
