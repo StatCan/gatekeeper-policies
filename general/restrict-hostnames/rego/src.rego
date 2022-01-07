@@ -34,20 +34,6 @@ is_exempt(host) {
 	glob.match(exemption, [], host)
 }
 
-# Host is permitted on namespace
-is_allowed(host, path) {
-	allowedHost := allowedHosts[_]
-	host == allowedHost.host
-}
-
-# Host is permitted on namespace with no path restrictions
-is_allowed(host, path) {
-	allowedHost := allowedHosts[_]
-
-	host == allowedHost.host
-	not allowedHost.path
-}
-
 # Host and path is permitted
 is_allowed(host, path) {
 	allowedHost := allowedHosts[_]
@@ -67,9 +53,6 @@ is_allowed_regex(host, path) {
 
 # Ingress
 violation[{"msg": msg}] {
-	print("Ingress: ", input.review)
-	print("AllowedHosts: ", allowedHosts)
-
 	input.review.kind.kind == "Ingress"
 	input.review.kind.group == "networking.k8s.io"
 
@@ -91,9 +74,6 @@ violation[{"msg": msg}] {
 violation[{"msg": msg}] {
 	input.review.kind.kind == "VirtualService"
 	input.review.kind.group == "networking.istio.io"
-
-	print("Ingress: ", input.review)
-	print("AllowedHosts: ", allowedHosts)
 
 	host := input.review.object.spec.hosts[_]
 	path := input.review.object.spec.http[_].match[_].uri.regex

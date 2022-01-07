@@ -23,24 +23,7 @@ test_prefix_pass {
 	host := "test.com"
 	path := "/pass"
 
-	result := is_allowed(host, path) with input.review.object.metadata.namespace as "test-prefix-pass" with data.inventory.cluster.v1.Namespace as namespaces
-}
-
-# Ensures that a path which is not allowed fails.
-test_prefix_fail {
-	namespaces := {"test-fail": {
-		"apiVersion": "v1",
-		"kind": "Namespace",
-		"metadata": {
-			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/fail"}]`},
-			"name": "test-fail",
-		},
-	}}
-
-	host := "test.com"
-	path := "/"
-
-	result := is_allowed(host, path) with input.review.object.metadata.namespace as "test-fail" with data.inventory.cluster.v1.Namespace as namespaces
+	is_allowed(host, path) with input.review.object.metadata.namespace as "test-prefix-pass" with data.inventory.cluster.v1.Namespace as namespaces
 }
 
 # Test for any path under a host
@@ -97,7 +80,7 @@ test_ingress_allow_all {
 
 	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
-	# If result set is empty
+	# If result set is empty, no violations
 	result == set()
 }
 
@@ -155,7 +138,7 @@ test_ingress_empty_path {
 
 	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
-	# If result set is empty
+	# If result set is empty, no violations
 	result == set()
 }
 
@@ -206,14 +189,14 @@ test_ingress_fail {
 		"apiVersion": "v1",
 		"kind": "Namespace",
 		"metadata": {
-			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/nothing"}]`},
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/finance"}]`},
 			"name": "test",
 		},
 	}}
 
 	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
-	# If result set is empty
+	# 1 message for /other which is not allowed.
 	print(result)
 	count(result) == 1
 }
@@ -272,7 +255,7 @@ test_ingress_no_annotation {
 
 	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
-	# If result set is empty
+	# 2 messages, one for each path in the paths
 	print(result)
-	count(result) == 1
+	count(result) == 2
 }
