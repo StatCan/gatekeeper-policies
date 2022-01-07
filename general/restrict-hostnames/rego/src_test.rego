@@ -85,6 +85,64 @@ test_ingress_allow_all {
 }
 
 # Test for any path under a host
+test_ingress_case_mismatch {
+	ingress := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "prod",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"host": "test.com",
+					"http": {"paths": [
+						{
+							"path": "/FINANCE",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+						{
+							"path": "/finANCE",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+					]},
+				}]},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/FINance"}]`},
+			"name": "test",
+		},
+	}}
+
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
+
+	# If result set is empty, no violations
+	result == set()
+}
+
+# Test for any path under a host
 test_ingress_empty_path {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",

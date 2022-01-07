@@ -39,7 +39,7 @@ is_allowed(host, path) {
 	allowedHost := allowedHosts[_]
 
 	host == allowedHost.host
-	startswith(path, allowedHost.path)
+	startswith(lower(path), allowedHost.path)
 }
 
 # Host and path is permitted for VirtualServices regex match
