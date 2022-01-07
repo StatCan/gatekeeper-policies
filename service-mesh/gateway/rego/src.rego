@@ -59,7 +59,7 @@ violation[{"msg": msg}] {
 }
 
 tls_protocol_violation_msg(parameterName, options) = msg {
-  msg := sprintf("TLS %v for HTTPS must be set to one of the following: %v", [parameterName, options])
+	msg := sprintf("TLS %v for HTTPS must be set to one of the following: %v", [parameterName, options])
 }
 
 # Ensure only approved CipherSuites are used.
@@ -81,7 +81,7 @@ violation[{"msg": msg}] {
 
 	server.port.protocol == "HTTPS"
 	cipherSuites := [cs | cs = server.tls.cipherSuites[_]]
-  count(cipherSuites) == 0
+	count(cipherSuites) == 0
 	msg := sprintf("CipherSuites must be defined from the following: %v", [input.parameters.approvedCipherSuites])
 }
 

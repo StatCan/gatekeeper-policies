@@ -19,7 +19,7 @@ spec:
                 type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
-      rego: |
+      rego: |-
         package restricthostnames
 
         # Annotation which contains JSON information about exempted Hosts and Paths
@@ -38,7 +38,7 @@ spec:
         }
 
         # Host is permitted on namespace
-        is_allowed(host) {
+        is_allowed(host, path) {
             allowedHost := allowedHosts[_]
             host == allowedHost.host
         }
@@ -61,7 +61,7 @@ spec:
 
         # Host and path is permitted, handling the "/*" prefix for Istio
         is_allowed(host, path) {
-              allowedHost := allowedHosts[_]
+            allowedHost := allowedHosts[_]
 
             host == allowedHost.host
             endswith(path, "/*")
@@ -88,7 +88,7 @@ spec:
 
         # Virtual Service
         # Common validation for VirtualServices
-        virtual_service(path) {
+        virtual_service(path) = msg {
             input.review.kind.kind == "VirtualService"
             input.review.kind.group == "networking.istio.io"
 
@@ -107,19 +107,37 @@ spec:
         violation[{"msg": msg}] {
             path := input.review.object.spec.http[_].match[_].uri.prefix
 
-            virtual_service(path)
+            msg := virtual_service(path)
         }
 
         # (exact)
         violation[{"msg": msg}] {
             path := input.review.object.spec.http[_].match[_].uri.exact
 
-            virtual_service(path)
+            msg := virtual_service(path)
         }
 
         # (regex)
         violation[{"msg": msg}] {
             path := input.review.object.spec.http[_].match[_].uri.regex
 
-            virtual_service(path)
+            msg := virtual_service(path)
         }
+
+        # Namespace
+        is_valid_json := json.is_valid(input.review.object.metadata.annotations[annotation])
+
+        json_schema_is_valid() {
+            is_namespace(input.review.kind)
+            is_valid_json == true
+        }
+
+        is_namespace(kind) {
+            kind.kind == "Namespace"
+            kind.group == "v1"
+        }
+
+        # Determines if json is valid
+        # violation[{"msg": msg}] {
+
+        # }
