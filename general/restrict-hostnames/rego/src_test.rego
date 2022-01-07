@@ -142,7 +142,7 @@ test_ingress_empty_path {
 	result == set()
 }
 
-# Test for any path under a host
+# Test for ingress with 2 paths, one of which is not allowed.
 test_ingress_fail {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -201,7 +201,7 @@ test_ingress_fail {
 	count(result) == 1
 }
 
-# Test for any path under a host
+# Test for Ingress and Namespace without annotation.
 test_ingress_no_annotation {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -258,4 +258,64 @@ test_ingress_no_annotation {
 	# 2 messages, one for each path in the paths
 	print(result)
 	count(result) == 2
+}
+
+# Test for Ingress and Namespace without annotation.
+test_ingress_exempt {
+	ingress := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "prod",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"host": "testing.test.com",
+					"http": {"paths": [
+						{
+							"path": "/finance",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+						{
+							"path": "/other",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+					]},
+				}]},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {},
+			"name": "test",
+		},
+	}}
+
+    exemptions := ["*.test.com"]
+
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+
+    #Empty set means no violations
+	result == set()
 }
