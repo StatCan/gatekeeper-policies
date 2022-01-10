@@ -29,9 +29,15 @@ identical(obj, review) {
 	obj.metadata.name == review.object.metadata.name
 }
 
+# Exemptions for hosts passed in via the configuration of the Policy
 is_exempt(host) {
 	exemption := input.parameters.exemptions[_]
 	glob.match(exemption, [], host)
+}
+
+# Exemptions for hosts within the namespace
+is_exempt(host) {
+	glob.match(concat(".", ["*", input.review.object.metadata.namespace, "svc**"]), [], host)
 }
 
 # Host and path is permitted
