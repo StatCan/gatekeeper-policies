@@ -50,7 +50,7 @@ is_allowed(host, path) {
 
 # Host and path is permitted for VirtualServices regex match
 # Regex must start with an allowed path in the form of "^$PATH*"
-is_allowed_regex(host, path) {
+is_allowed(host, path) {
 	allowedHost := allowedHosts[_]
 
 	host == allowedHost.host

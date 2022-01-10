@@ -84,7 +84,7 @@ test_ingress_allow_all {
 	result == set()
 }
 
-# Test for any path under a host
+# Test case mismatch in a path
 test_ingress_case_mismatch {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -115,9 +115,9 @@ test_ingress_case_mismatch {
 							},
 						},
 						{
-							"path": "/finANCE",
+							"path": "/finANCE/billing",
 							"backend": {
-								"serviceName": "banking",
+								"serviceName": "billing",
 								"servicePort": 443,
 							},
 						},
@@ -142,7 +142,7 @@ test_ingress_case_mismatch {
 	result == set()
 }
 
-# Test for any path under a host
+# Test for an empty path
 test_ingress_empty_path {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -318,7 +318,7 @@ test_ingress_no_annotation {
 	count(result) > 0
 }
 
-# Test for Ingress and Namespace without annotation.
+# Test for Ingress with an exempt host.
 test_ingress_exempt {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -378,7 +378,7 @@ test_ingress_exempt {
 	result == set()
 }
 
-# Test for Ingress and Namespace without annotation.
+# Test for an allowed VS.
 test_vs_allowed {
 	vs_review := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -400,7 +400,7 @@ test_vs_allowed {
 				},
 				"spec": {
 					"hosts": ["test.com"],
-					"http": [{"match": [{"uri": {"prefix": "/finance"}}]}],
+					"http": [{"match": [{"uri": {"prefix": "/finance"}}, {"uri": {"exact": "/finance"}}, {"uri": {"regex": "^/finance"}}]}],
 					"tcp": [{"route": [{"destination": {"host": "finance.test.scv.cluster.local"}}]}],
 					"tls": [{"match": [{"sniHosts": ["finance.test.scv.cluster.local"]}]}],
 				},
@@ -425,7 +425,7 @@ test_vs_allowed {
 	result == set()
 }
 
-# Test for Ingress and Namespace without annotation.
+# Test for a VS woth a wront host.
 test_vs_wrong_host {
 	vs_review := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -447,7 +447,7 @@ test_vs_wrong_host {
 				},
 				"spec": {
 					"hosts": ["testing.com"],
-					"http": [{"match": [{"uri": {"prefix": "/finance"}}]}],
+					"http": [{"match": [{"uri": {"prefix": "/finance"}}, {"uri": {"prefix": "/other"}}]}],
 					"tcp": [{"route": [{"destination": {"host": "finance.test.scv.cluster.local"}}]}],
 					"tls": [{"match": [{"sniHosts": ["finance.test.scv.cluster.local"]}]}],
 				},
@@ -472,7 +472,55 @@ test_vs_wrong_host {
 	print(result)
 }
 
-# Test for Ingress and Namespace without annotation.
+# Test for VirtualService with multiple hosts, though only 1 is allowed.
+test_vs_multi_host_fail {
+	vs_review := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {
+					"hosts": ["testing.com", "test.com"],
+					"http": [{"match": [{"uri": {"prefix": "/finance"}}]}],
+					"tcp": [{"route": [{"destination": {"host": "finance.test.scv.cluster.local"}}]}],
+					"tls": [{"match": [{"sniHosts": ["finance.test.scv.cluster.local"]}]}],
+				},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/finance"}]`},
+			"name": "test",
+		},
+	}}
+
+	exemptions := [""]
+
+	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+
+	#Empty set means no violations
+	print(result)
+	count(result) > 0
+}
+
+# Test for VirtualService with multiple allowed hosts.
 test_vs_multi_host {
 	vs_review := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -519,7 +567,7 @@ test_vs_multi_host {
 	result == set()
 }
 
-# Test for Ingress and Namespace without annotation.
+# Test for VirtualService and Namespace without annotation.
 test_vs_no_annotation {
 	vs_review := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -566,7 +614,7 @@ test_vs_no_annotation {
 	print(result)
 }
 
-# Test for Ingress and Namespace without annotation.
+# Test to exempt hostnames from within the namespace.
 test_vs_exempt_namespace_hosts {
 	vs_review := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -601,6 +649,53 @@ test_vs_exempt_namespace_hosts {
 		"kind": "Namespace",
 		"metadata": {
 			"annotations": {},
+			"name": "test",
+		},
+	}}
+
+	exemptions := [""]
+
+	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+
+	#Empty set means no violations
+	result == set()
+}
+
+# Test for regex match on VirtualService
+test_vs_regex {
+	vs_review := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {
+					"hosts": ["testing.com", "test.com"],
+					"http": [{"match": [{"uri": {"regex": "^/finance/[a-f1-0](16)"}}]}],
+					"tcp": [{"route": [{"destination": {"host": "finance.test.scv.cluster.local"}}]}],
+					"tls": [{"match": [{"sniHosts": ["finance.test.scv.cluster.local"]}]}],
+				},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/finance"},{"host": "testing.com","path":"/finance"}]`},
 			"name": "test",
 		},
 	}}
