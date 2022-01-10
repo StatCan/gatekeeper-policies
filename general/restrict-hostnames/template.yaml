@@ -23,121 +23,108 @@ spec:
         package restricthostnames
 
         # Annotation which contains JSON information about exempted Hosts and Paths
+        # JSON structure is as follows:
+        # array(
+        #   object(
+        #     host: string,
+        #     path: string
+        #   )
+        # )
         annotation := "ingress.statcan.gc.ca/allowed-hosts"
+
         # Allowed hosts scraped from the above annotation.
-        allowedHosts := json.unmarshal(data.inventory.cluster["v1"].Namespace[input.review.object.metadata.namespace].metadata.annotations[annotation])
+        allowedHosts := hosts {
+        	json.is_valid(data.inventory.cluster.v1.Namespace[input.review.object.metadata.namespace].metadata.annotations[annotation])
+        	hosts := normalize_hosts(json.unmarshal(data.inventory.cluster.v1.Namespace[input.review.object.metadata.namespace].metadata.annotations[annotation]))
+        }
+
+        # Normalizes the objects for easier logic by lowercasing the path.
+        normalize_hosts(hosts) = normalized_hosts {
+        	normalized_hosts := [host |
+        		current_host_object := hosts[_]
+        		host := {"host": current_host_object.host, "path": lower(current_host_object.path)}
+        	]
+        }
 
         identical(obj, review) {
-            obj.metadata.namespace == review.object.metadata.namespace
-            obj.metadata.name == review.object.metadata.name
+        	obj.metadata.namespace == review.object.metadata.namespace
+        	obj.metadata.name == review.object.metadata.name
         }
 
+        # Exemptions for hosts passed in via the configuration of the Policy
         is_exempt(host) {
-            exemption := input.parameters["exemptions"][_]
-            glob.match(exemption, [], host)
+        	exemption := input.parameters.exemptions[_]
+        	glob.match(exemption, [], host)
         }
 
-        # Host is permitted on namespace
-        is_allowed(host, path) {
-            allowedHost := allowedHosts[_]
-            host == allowedHost.host
-        }
-
-        # Host is permitted on namespace with no path restrictions
-        is_allowed(host, path) {
-            allowedHost := allowedHosts[_]
-
-            host == allowedHost.host
-            not allowedHost.path
+        # Exemptions for hosts within the namespace
+        is_exempt(host) {
+        	glob.match(concat(".", ["*", input.review.object.metadata.namespace, "svc**"]), [], host)
         }
 
         # Host and path is permitted
         is_allowed(host, path) {
-            allowedHost := allowedHosts[_]
+        	allowedHost := allowedHosts[_]
 
-            host == allowedHost.host
-            path == allowedHost.path
+        	host == allowedHost.host
+        	startswith(lower(path), allowedHost.path)
         }
 
-        # Host and path is permitted, handling the "/*" prefix for Istio
+        # Host and path is permitted for VirtualServices regex match
+        # Regex must start with an allowed path in the form of "^$PATH*"
         is_allowed(host, path) {
-            allowedHost := allowedHosts[_]
+        	allowedHost := allowedHosts[_]
 
-            host == allowedHost.host
-            endswith(path, "/*")
-            path == concat("", [allowedHost.path, "*"])
+        	host == allowedHost.host
+        	startswith(path, concat("", ["^", allowedHost.path]))
+        }
+
+        # Determines ifa host and path combination is invalid and returns a concatenated response
+        is_invalid(host, path) = invalid {
+        	# Check if the hostname is exempt
+        	not is_exempt(host)
+
+        	# Check if the hostname is allowed
+        	not is_allowed(host, path)
+
+        	invalid := concat("", [host, path])
         }
 
         # Ingress
         violation[{"msg": msg}] {
-            input.review.kind.kind == "Ingress"
-            input.review.kind.group == "networking.k8s.io"
+        	input.review.kind.kind == "Ingress"
+        	input.review.kind.group == "networking.k8s.io"
 
-            rule := input.review.object.spec.rules[_]
-            host := rule.host
-            path := rule.http.paths[_].path
+        	# Gather all invalid host and path combinations
+        	invalid_hostpaths := {hostpath |
+        		rule := input.review.object.spec.rules[_]
+        		host := rule.host
+        		path := rule.http.paths[_].path
 
-            # Check if the hostname is exempt
-            not is_exempt(host)
+        		hostpath := is_invalid(host, path)
+        	}
 
-            # Check if the hostname is allowed
-            not is_allowed(host, path)
+        	count(invalid_hostpaths) > 0
 
-            msg := sprintf("ingress host <%v> and path <%v> is not allowed for this namespace", [host, path])
+        	msg := sprintf("hostpaths in the ingress are not valid for this namespace: %v", [invalid_hostpaths])
         }
 
         # Virtual Service
-        # Common validation for VirtualServices
-        virtual_service(path) = msg {
-            input.review.kind.kind == "VirtualService"
-            input.review.kind.group == "networking.istio.io"
-
-            host := input.review.object.spec.hosts[_]
-
-            # Check if the hostname is exempt
-            not is_exempt(host)
-
-            # Check if the hostname is allowed
-            not is_allowed(host, path)
-
-            msg := sprintf("virtualservice host <%v> and path <%v> is not allowed for this namespace", [host, path])
-        }
-
-        # (prefix)
         violation[{"msg": msg}] {
-            path := input.review.object.spec.http[_].match[_].uri.prefix
+        	input.review.kind.kind == "VirtualService"
+        	input.review.kind.group == "networking.istio.io"
 
-            msg := virtual_service(path)
+        	# Gather all invalid host and path combinations
+        	invalid_hostpaths := {hostpath |
+        		paths := ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
+
+        		path := paths[_]
+        		host := input.review.object.spec.hosts[_]
+
+        		hostpath := is_invalid(host, path)
+        	}
+        	
+        	count(invalid_hostpaths) > 0
+
+        	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v", [invalid_hostpaths])
         }
-
-        # (exact)
-        violation[{"msg": msg}] {
-            path := input.review.object.spec.http[_].match[_].uri.exact
-
-            msg := virtual_service(path)
-        }
-
-        # (regex)
-        violation[{"msg": msg}] {
-            path := input.review.object.spec.http[_].match[_].uri.regex
-
-            msg := virtual_service(path)
-        }
-
-        # Namespace
-        is_valid_json := json.is_valid(input.review.object.metadata.annotations[annotation])
-
-        json_schema_is_valid() {
-            is_namespace(input.review.kind)
-            is_valid_json == true
-        }
-
-        is_namespace(kind) {
-            kind.kind == "Namespace"
-            kind.group == "v1"
-        }
-
-        # Determines if json is valid
-        # violation[{"msg": msg}] {
-
-        # }
