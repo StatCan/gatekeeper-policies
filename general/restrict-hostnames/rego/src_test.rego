@@ -201,7 +201,7 @@ test_ingress_empty_path {
 }
 
 # Test for ingress with 2 paths, one of which is not allowed.
-test_ingress_fail {
+test_ingress_unallowed_path {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
 		"kind": "AdmissionReview",
@@ -256,7 +256,7 @@ test_ingress_fail {
 
 	# 1 message for /other which is not allowed.
 	print(result)
-	count(result) == 1
+	count(result) > 0
 }
 
 # Test for Ingress and Namespace without annotation.
@@ -313,9 +313,9 @@ test_ingress_no_annotation {
 
 	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
-	# 2 messages, one for each path in the paths
+	# result with entry means there was a violation
 	print(result)
-	count(result) == 2
+	count(result) > 0
 }
 
 # Test for Ingress and Namespace without annotation.
@@ -468,7 +468,7 @@ test_vs_wrong_host {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	count(result) == 1
+	count(result) > 0
 	print(result)
 }
 
@@ -562,7 +562,7 @@ test_vs_no_annotation {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	count(result) == 1
+	count(result) > 0
 	print(result)
 }
 

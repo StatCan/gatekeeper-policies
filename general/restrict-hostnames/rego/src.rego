@@ -57,68 +57,52 @@ is_allowed_regex(host, path) {
 	startswith(path, concat("", ["^", allowedHost.path]))
 }
 
+# Determines ifa host and path combination is invalid and returns a concatenated response
+is_invalid(host, path) = invalid {
+	# Check if the hostname is exempt
+	not is_exempt(host)
+
+	# Check if the hostname is allowed
+	not is_allowed(host, path)
+
+	invalid := concat("", [host, path])
+}
+
 # Ingress
 violation[{"msg": msg}] {
 	input.review.kind.kind == "Ingress"
 	input.review.kind.group == "networking.k8s.io"
 
-	rule := input.review.object.spec.rules[_]
-	host := rule.host
-	path := rule.http.paths[_].path
+	# Gather all invalid host and path combinations
+	invalid_hostpaths := {hostpath |
+		rule := input.review.object.spec.rules[_]
+		host := rule.host
+		path := rule.http.paths[_].path
 
-	# Check if the hostname is exempt
-	not is_exempt(host)
+		hostpath := is_invalid(host, path)
+	}
 
-	# Check if the hostname is allowed
-	not is_allowed(host, path)
+	count(invalid_hostpaths) > 0
 
-	msg := sprintf("ingress host <%v> and path <%v> is not allowed for this namespace", [host, path])
+	msg := sprintf("hostpaths in the ingress are not valid for this namespace: %v", [invalid_hostpaths])
 }
 
 # Virtual Service
-# (regex)
 violation[{"msg": msg}] {
 	input.review.kind.kind == "VirtualService"
 	input.review.kind.group == "networking.istio.io"
 
-	host := input.review.object.spec.hosts[_]
-	path := input.review.object.spec.http[_].match[_].uri.regex
+	# Gather all invalid host and path combinations
+	invalid_hostpaths := {hostpath |
+		paths := ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
 
-	# Check if the hostname is exempt
-	not is_exempt(host)
+		path := paths[_]
+		host := input.review.object.spec.hosts[_]
 
-	# Check if the hostname is allowed
-	not is_allowed_regex(host, path)
+		hostpath := is_invalid(host, path)
+	}
+	
+	count(invalid_hostpaths) > 0
 
-	msg := sprintf("virtualservice host <%v> and path <%v> is not allowed for this namespace", [host, path])
-}
-
-# Common validation for VirtualServices
-virtual_service(path) = msg {
-	input.review.kind.kind == "VirtualService"
-	input.review.kind.group == "networking.istio.io"
-
-	host := input.review.object.spec.hosts[_]
-
-	# Check if the hostname is exempt
-	not is_exempt(host)
-
-	# Check if the hostname is allowed
-	not is_allowed(host, path)
-
-	msg := sprintf("virtualservice host <%v> and path <%v> is not allowed for this namespace", [host, path])
-}
-
-# (prefix)
-violation[{"msg": msg}] {
-	path := input.review.object.spec.http[_].match[_].uri.prefix
-
-	msg := virtual_service(path)
-}
-
-# (exact)
-violation[{"msg": msg}] {
-	path := input.review.object.spec.http[_].match[_].uri.exact
-
-	msg := virtual_service(path)
+	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v", [invalid_hostpaths])
 }
