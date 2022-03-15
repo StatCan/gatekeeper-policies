@@ -1,0 +1,41 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: denyexternalusers
+spec:
+  crd:
+    spec:
+      names:
+        kind: DenyExternalUsers
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            labels:
+              type: array
+              items: 
+                type: string
+            employeeDomains:
+              type: array
+              items: 
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package denyexternalusers
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "RoleBinding"
+          ns := input.review.object.metadata.namespace
+          email := input.review.object.metadata.annotations["user"]
+          not isEmployee(email)
+          profile := data.inventory.cluster["kubeflow.org/v1"]["Profile"][ns]
+          profileLabel := input.parameters.labels[_]
+          profile.metadata.labels[profileLabel] == "true"
+          msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
+        }
+
+        # Ensure only non-internal employees are checked
+        isEmployee(email) {
+          endswith(email, concat("@", [input.parameters.employeeDomains[_]]))
+        }

@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: DenyExternalUsers
+metadata:
+  name: denyexternalusers
+spec:
+  match:
+    kinds:
+      - apiGroups: ["rbac.authorization.k8s.io"]
+        kinds: ["RoleBinding"]
+  parameters:
+    labels: 
+      - "feature.aaw.statcan.gc.ca/employee-only"
+      - "state.aaw.statcan.gc.ca/employee-only-features"
+    employeeDomains: 
+      - "cloud.statcan.ca"
+      - "statcan.gc.ca"
