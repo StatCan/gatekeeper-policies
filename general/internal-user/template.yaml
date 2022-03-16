@@ -25,14 +25,27 @@ spec:
         package denyexternalusers
 
         violation[{"msg": msg}] {
-          input.review.object.kind == "RoleBinding"
-          ns := input.review.object.metadata.namespace
-          email := input.review.object.metadata.annotations["user"]
-          not isEmployee(email)
+          obj := input.review.object
+          check_obj(obj)
+          ns := obj.metadata.namespace
           profile := data.inventory.cluster["kubeflow.org/v1"]["Profile"][ns]
           profileLabel := input.parameters.labels[_]
           profile.metadata.labels[profileLabel] == "true"
           msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
+        }
+
+        # RoleBinding Object
+        check_obj(obj) {
+          obj.kind == "RoleBinding"
+          email := obj.subjects[0].name
+          not isEmployee(email)
+        }
+
+        # AuthorizationPolicy Object
+        check_obj(obj) {
+          obj.kind == "AuthorizationPolicy"
+          email := obj.spec.rules[0]["when"][0]["values"][0]
+          not isEmployee(email)
         }
 
         # Ensure only non-internal employees are checked

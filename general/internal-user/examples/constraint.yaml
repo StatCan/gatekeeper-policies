@@ -5,8 +5,8 @@ metadata:
 spec:
   match:
     kinds:
-      - apiGroups: ["rbac.authorization.k8s.io"]
-        kinds: ["RoleBinding"]
+      - apiGroups: ["rbac.authorization.k8s.io", "security.istio.io"]
+        kinds: ["RoleBinding", "AuthorizationPolicy"]
   parameters:
     labels: 
       - "feature.aaw.statcan.gc.ca/employee-only"
