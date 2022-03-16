@@ -1,0 +1,134 @@
+version: "3"
+
+silent: true
+
+vars:
+  CLUSTER_NAME: sas-policy-cluster
+  APP_NAME: k3d-sas-policy
+  HELM_VERS: v3.8.0
+
+  KUBECTL: kubectl --context k3d-{{.CLUSTER_NAME}}
+
+  RESET: \033[0m
+  BLACK: \033[:0;30m
+  RED: \033[:0;31m
+  GREEN: \033[:0;32m
+
+tasks:
+  
+  test:all:
+    prefix: test
+    desc: run all tests
+    cmds:
+      - task: constraint:config
+      - task: test:alice
+      - task: test:bob
+      - task: test:jo
+      - task: test:sam
+  
+  constraint:config:
+    prefix: constraint > configure
+    desc: configure and apply template.yaml and examples/constraint.yaml
+    cmds:
+      - cmd: "{{.KUBECTL}} apply -f template.yaml"
+      - "sleep 15"
+      - |
+        {{.KUBECTL}} apply -f examples/constraint.yaml
+      - "sleep 15"
+
+  test:alice:
+    prefix: test < alice
+    desc: test external user with label set to true, should not create objects
+    cmds:
+      - cmd: "{{.KUBECTL}} create ns alice"
+        ignore_error: true
+      - |
+        {{.KUBECTL}} apply -f examples/alice/profile.yaml
+      - cmd: "{{.KUBECTL}} apply -f examples/alice/rolebinding.yaml"
+        ignore_error: true
+      - cmd: "{{.KUBECTL}} apply -f examples/alice/authorizationpolicy.yaml"
+        ignore_error: true
+
+  delete:alice:
+        prefix: delete < alice
+        desc: delete alice profile, rolebinding, and authorizationpolicy
+        cmds:
+          - cmd: "{{.KUBECTL}} delete -f examples/alice/profile.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/alice/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/alice/authorizationpolicy.yaml"
+            ignore_error: true
+
+  test:bob:
+        prefix: test < bob
+        desc: test external user with label set to false, should create objects
+        cmds:
+          - cmd: "{{.KUBECTL}} create ns bob"
+            ignore_error: true
+          - |
+            {{.KUBECTL}} apply -f examples/bob/profile.yaml
+          - cmd: "{{.KUBECTL}} apply -f examples/bob/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} apply -f examples/bob/authorizationpolicy.yaml"
+            ignore_error: true
+
+  delete:bob:
+        prefix: delete < bob
+        desc: delete user bob
+        cmds:
+          - cmd: "{{.KUBECTL}} delete -f examples/bob/profile.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/bob/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/bob/authorizationpolicy.yaml"
+            ignore_error: true   
+  
+  test:jo:
+        prefix: test < jo
+        desc: test external user with no label present, should create objects (by default)
+        cmds:
+          - cmd: "{{.KUBECTL}} create ns jo"
+            ignore_error: true
+          - |
+            {{.KUBECTL}} apply -f examples/jo/profile.yaml
+          - cmd: "{{.KUBECTL}} apply -f examples/jo/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} apply -f examples/jo/authorizationpolicy.yaml"
+            ignore_error: true
+
+  delete:jo:
+        prefix: delete < jo
+        desc: delete user jo
+        cmds:
+          - cmd: "{{.KUBECTL}} delete -f examples/jo/profile.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/jo/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/jo/authorizationpolicy.yaml"
+            ignore_error: true
+  
+  test:sam:
+        prefix: test < sam
+        desc: test internal user with label set to true, should create objects
+        cmds:
+          - cmd: "{{.KUBECTL}} create ns sam"
+            ignore_error: true
+          - |
+            {{.KUBECTL}} apply -f examples/sam/profile.yaml
+          - cmd: "{{.KUBECTL}} apply -f examples/sam/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} apply -f examples/sam/authorizationpolicy.yaml"
+            ignore_error: true
+
+  delete:sam:
+        prefix: delete < sam
+        desc: delete user sam
+        cmds:
+          - cmd: "{{.KUBECTL}} delete -f examples/sam/profile.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/sam/rolebinding.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/sam/authorizationpolicy.yaml"
+            ignore_error: true
+  

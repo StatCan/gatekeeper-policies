@@ -1,0 +1,14 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  annotations:
+    role: edit
+    user: jo@external.ca
+  name: user-jo-external-clusterrole-edit
+  namespace: jo
+spec:
+  rules:
+  - when:
+    - key: request.headers[kubeflow-userid]
+      values:
+      - jo@external.ca
