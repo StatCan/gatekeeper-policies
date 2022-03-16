@@ -26,7 +26,9 @@ spec:
 
         violation[{"msg": msg}] {
           obj := input.review.object
-          check_obj(obj)
+          obj.kind == "RoleBinding"
+          email := obj.subjects[0].name
+          not isEmployee(email)
           ns := obj.metadata.namespace
           profile := data.inventory.cluster["kubeflow.org/v1"]["Profile"][ns]
           profileLabel := input.parameters.labels[_]
@@ -34,20 +36,18 @@ spec:
           msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
         }
 
-        # RoleBinding Object
-        check_obj(obj) {
-          obj.kind == "RoleBinding"
-          email := obj.subjects[0].name
-          not isEmployee(email)
-        }
-
-        # AuthorizationPolicy Object
-        check_obj(obj) {
+        violation[{"msg": msg}] {
+          obj := input.review.object
           obj.kind == "AuthorizationPolicy"
           email := obj.spec.rules[0]["when"][0]["values"][0]
           not isEmployee(email)
+          ns := obj.metadata.namespace
+          profile := data.inventory.cluster["kubeflow.org/v1"]["Profile"][ns]
+          profileLabel := input.parameters.labels[_]
+          profile.metadata.labels[profileLabel] == "true"
+          msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
         }
-
+        
         # Ensure only non-internal employees are checked
         isEmployee(email) {
           endswith(email, concat("@", [input.parameters.employeeDomains[_]]))
