@@ -12,3 +12,10 @@ spec:
   parameters:
     exemptions:
       - '*.example.ca'
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    ingress.statcan.gc.ca/allowed-hosts: '[{"host": "test.com","path":"/FINance"}]'
+  name: restrict-hostnames

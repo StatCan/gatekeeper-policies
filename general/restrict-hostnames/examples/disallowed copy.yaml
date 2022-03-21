@@ -1,0 +1,13 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: my-app
+spec:
+  host: "fail.com"
+  rules:
+    - http:
+        paths:
+          - path: /finance
+            backend:
+              serviceName: my-app
+              servicePort: 8200

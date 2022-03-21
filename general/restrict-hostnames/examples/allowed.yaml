@@ -1,0 +1,27 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: my-app
+spec:
+  host: "pass.example.ca"
+  rules:
+    - http:
+        paths:
+          - path: /finance
+            backend:
+              serviceName: my-app
+              servicePort: 8200
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: my-app
+spec:
+  host: "pass.ca"
+  rules:
+    - http:
+        paths:
+          - path: /finance
+            backend:
+              serviceName: my-app
+              servicePort: 8200
