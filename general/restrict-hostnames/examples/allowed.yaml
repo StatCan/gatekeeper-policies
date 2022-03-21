@@ -1,7 +1,8 @@
 kind: Ingress
 apiVersion: extensions/v1beta1
 metadata:
-  name: my-app
+  name: pass-1
+  namespace: restrict-hostnames
 spec:
   host: "pass.example.ca"
   rules:
@@ -15,7 +16,8 @@ spec:
 kind: Ingress
 apiVersion: extensions/v1beta1
 metadata:
-  name: my-app
+  name: pass-2
+  namespace: restrict-hostnames
 spec:
   host: "pass.ca"
   rules:
