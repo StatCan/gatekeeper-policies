@@ -17,6 +17,7 @@ This repo contains general policies that can be used to enforce common Kubernete
 | Ingress Hostnames Conflict       | [ingress-hostnames-conflict](general/ingress-hostnames-conflict)             |
 | Load Balancer No Public IPs      | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips)             |
 | Pod Enforce Labels               | [pod-enforce-labels](general/pod-enforce-labels)                             |
+| Restrict Hostnames               | [restrict-hostnames](general/restrict-hostnames/)                            |
 
 ## Pod Security Policies
 
