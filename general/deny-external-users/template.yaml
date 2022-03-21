@@ -24,10 +24,12 @@ spec:
       rego: |
         package denyexternalusers
 
+        # RoleBinding Object
         violation[{"msg": msg}] {
           obj := input.review.object
           obj.kind == "RoleBinding"
-          email := obj.subjects[0].name
+          email := obj.subjects[_].name
+          contains(email, "@")
           not isEmployee(email)
           ns := obj.metadata.namespace
           profile := data.inventory.cluster["kubeflow.org/v1"]["Profile"][ns]
@@ -36,10 +38,12 @@ spec:
           msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
         }
 
+        # AuthorizationPolicy Object
         violation[{"msg": msg}] {
           obj := input.review.object
           obj.kind == "AuthorizationPolicy"
-          email := obj.spec.rules[0]["when"][0]["values"][0]
+          email := obj.spec.rules[_]["when"][_]["values"][_]
+          contains(email, "@")
           not isEmployee(email)
           ns := obj.metadata.namespace
           profile := data.inventory.cluster["kubeflow.org/v1"]["Profile"][ns]
@@ -47,7 +51,7 @@ spec:
           profile.metadata.labels[profileLabel] == "true"
           msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
         }
-        
+
         # Ensure only non-internal employees are checked
         isEmployee(email) {
           endswith(email, concat("@", [input.parameters.employeeDomains[_]]))

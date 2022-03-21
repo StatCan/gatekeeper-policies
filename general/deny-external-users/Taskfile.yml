@@ -131,4 +131,3 @@ tasks:
             ignore_error: true
           - cmd: "{{.KUBECTL}} delete -f examples/sam/authorizationpolicy.yaml"
             ignore_error: true
-  
