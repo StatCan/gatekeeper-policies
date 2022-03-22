@@ -1,0 +1,24 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: denyemployeeonlyfeatures
+spec:
+  crd:
+    spec:
+      names:
+        kind: DenyEmployeeOnlyFeatures
+
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package denyemployeeonlyfeatures
+
+        violation[{"msg": msg}] {
+          input.review.object.kind == "Pod"
+          label := input.review.object.metadata.labels["state.aaw.statcan.gc.ca/non-employee-users"]
+          label == "true"
+          container := input.review.object.spec.containers[_]
+          startswith(container.image, "k8scc01covidacr.azurecr.io/sas:")
+          msg := sprintf("Pod has state.aaw.statcan.gc.ca/non-employee-users=%v and container uses a SAS image %v", [label, container.image])
+        }
+

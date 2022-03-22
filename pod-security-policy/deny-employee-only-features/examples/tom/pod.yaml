@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tom-allowed
+  labels:
+    state.aaw.statcan.gc.ca/non-employee-users: "false"
+spec:
+  containers:
+    - name: tom
+      image: "k8scc01covidacr.azurecr.io/sas:0123"
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "30Mi"
