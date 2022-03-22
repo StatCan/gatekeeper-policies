@@ -4,7 +4,7 @@ Applies to Pod objects
 
 Checks `state.aaw.statcan.gc.ca/non-employee-users` set in Pod and container image to allow/deny Pod object to be created
 
-### Label Set in Profile
+### Label Set in Pod
 
 `state.aaw.statcan.gc.ca/non-employee-users: "true"` and SAS image --> deny
 
