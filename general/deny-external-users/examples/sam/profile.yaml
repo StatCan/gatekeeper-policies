@@ -1,0 +1,11 @@
+apiVersion: kubeflow.org/v1
+kind: Profile
+metadata:
+  labels:
+    feature.aaw.statcan.gc.ca/employee-only: "true"
+  name: sam
+spec:
+  owner:
+    kind: User
+    name: sam@statcan.gc.ca
+  resourceQuotaSpec: {}
