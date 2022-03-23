@@ -25,7 +25,14 @@ tasks:
       - task: test:bob
       - task: test:tom
 
-  
+  delete:all:
+    prefix: delete
+    desc: delete all tests
+    cmds:
+      - task: delete:alice
+      - task: delete:bob
+      - task: delete:tom
+
   constraint:config:
     prefix: constraint > configure
     desc: configure and apply template.yaml and examples/constraint.yaml
@@ -44,45 +51,56 @@ tasks:
         ignore_error: true
       - cmd: "{{.KUBECTL}} apply -f examples/alice/pod.yaml"
         ignore_error: true
-
+      - cmd: "{{.KUBECTL}} apply -f examples/alice/notebook.yaml"
+        ignore_error: true
 
   delete:alice:
         prefix: delete < alice
-        desc: delete alice pod
+        desc: delete alice pod and notebook
         cmds:
           - cmd: "{{.KUBECTL}} delete -f examples/alice/pod.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/alice/notebook.yaml"
             ignore_error: true
 
   test:bob:
     prefix: test < bob
-    desc: test user with label set to true and non-sas image, should create pod
+    desc: test user with label set to true and non-sas image, should create pod and notebook
     cmds:
       - cmd: "{{.KUBECTL}} create ns bob"
         ignore_error: true
       - cmd: "{{.KUBECTL}} apply -f examples/bob/pod.yaml"
         ignore_error: true
+      - cmd: "{{.KUBECTL}} apply -f examples/bob/notebook.yaml"
+        ignore_error: true
 
   delete:bob:
         prefix: delete < bob
-        desc: delete user bob
+        desc: delete bob pod and notebook
         cmds:
           - cmd: "{{.KUBECTL}} delete -f examples/bob/pod.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/bob/notebook.yaml"
             ignore_error: true
  
   test:tom:
     prefix: test < tom
-    desc: test user with label set to false and sas image, should create pod
+    desc: test user with label set to false and sas image, should create pod and notebook
     cmds:
       - cmd: "{{.KUBECTL}} create ns tom"
         ignore_error: true
       - cmd: "{{.KUBECTL}} apply -f examples/tom/pod.yaml"
         ignore_error: true
+      - cmd: "{{.KUBECTL}} apply -f examples/tom/notebook.yaml"
+        ignore_error: true
 
   delete:tom:
         prefix: delete < tom
-        desc: delete user tom
+        desc: delete tom pod and notebook
         cmds:
           - cmd: "{{.KUBECTL}} delete -f examples/tom/pod.yaml"
+            ignore_error: true
+          - cmd: "{{.KUBECTL}} delete -f examples/tom/notebook.yaml"
             ignore_error: true
 
  

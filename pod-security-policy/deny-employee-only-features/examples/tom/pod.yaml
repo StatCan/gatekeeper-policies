@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: tom-allowed
+  namespace: tom
   labels:
     state.aaw.statcan.gc.ca/non-employee-users: "false"
 spec:
