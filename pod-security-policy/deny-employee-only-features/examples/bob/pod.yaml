@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bob-allowed
+  namespace: bob
+  labels:
+    state.aaw.statcan.gc.ca/non-employee-users: "true"
+spec:
+  containers:
+    - name: bob
+      image: "k8scc01covidacr.azurecr.io/jup:0123"
+      resources:
+        limits:
+          cpu: "100m"
+          memory: "30Mi"

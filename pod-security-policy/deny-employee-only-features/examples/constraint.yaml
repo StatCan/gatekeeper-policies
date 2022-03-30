@@ -1,0 +1,9 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: DenyEmployeeOnlyFeatures
+metadata:
+  name: denyemployeeonlyfeatures
+spec:
+  match:
+    kinds:
+      - apiGroups: ["", "kubeflow.org"]
+        kinds: ["Pod", "Notebook"]
