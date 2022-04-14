@@ -1,0 +1,49 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: volumeclassification
+spec:
+  crd:
+    spec:
+      names:
+        kind: VolumeClassification
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package volumeclassification
+
+        violation[{"msg": msg}] {
+
+          # Binding to an statically provisioned PV
+          pvc := input.review.object
+          pvc.kind == "PersistentVolumeClaim"
+          pvc.spec.storageClassName == ""
+
+          # Check volume is in the inventory
+          pvRef := pvc.spec.volumeName
+          pv := data.inventory.cluster["v1"]["PersistentVolume"][pvRef]
+
+          # If one is PB, the other must be
+          pv.metadata.labels["data.statcan.gc.ca/classification"]  == "protected-b"
+          not pvc.metadata.labels["data.statcan.gc.ca/classification"] == "protected-b"
+
+          msg := sprintf("PVC <%v> is unclassified but the PV is protected-b", [pvc.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+
+          # Binding to an statically provisioned PV
+          pvc := input.review.object
+          pvc.kind == "PersistentVolumeClaim"
+          pvc.spec.storageClassName == ""
+
+          # Check volume is in the inventory
+          pvRef := pvc.spec.volumeName
+          pv := data.inventory.cluster["v1"]["PersistentVolume"][pvRef]
+
+          # If one is PB, the other must be
+          not pv.metadata.labels["data.statcan.gc.ca/classification"] == "protected-b"
+          pvc.metadata.labels["data.statcan.gc.ca/classification"] == "protected-b"
+
+          msg := sprintf("PVC <%v> is protected-b but the PV is unclassified", [pvc.metadata.name])
+        }
