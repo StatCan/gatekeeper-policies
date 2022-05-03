@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: VolumeClassification
+metadata:
+  name: pv-pvc-classification-match
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["PersistentVolumeClaim"]
+    #namespaceSelector:
+    #  matchExpressions:
+    #    - key: app.kubernetes.io/part-of
+    #      operator: In
+    #      values: ["kubeflow-profile"]

@@ -13,11 +13,12 @@ This repo contains general policies that can be used to enforce common Kubernete
 | Container Allowed Images         | [container-allowed-images](general/container-allowed-images)                 |
 | Container Image Must Have Digest | [container-image-must-have-digest](general/container-image-must-have-digest) |
 | Container Limits                 | [container-limits](general/container-limits)                                 |
-| Deny External Users              | [deny-external-users](general/deny-external-users)                                 |
+| Deny External Users              | [deny-external-users](general/deny-external-users)                           |
 | Ingress No Hostnames             | [ingress-no-hostnames](general/ingress-no-hostnames)                         |
 | Ingress Hostnames Conflict       | [ingress-hostnames-conflict](general/ingress-hostnames-conflict)             |
 | Load Balancer No Public IPs      | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips)             |
 | Pod Enforce Labels               | [pod-enforce-labels](general/pod-enforce-labels)                             |
+| PV PVC Classification            | [pv-pvc-classification](general/pv-pvc-classification)                       |
 
 ## Pod Security Policies
 
