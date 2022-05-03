@@ -33,6 +33,7 @@ bases:
   - block-host-namespace
   - container-capabilities
   - container-no-privilege-escalation
+  - deny-employee-only-features
   - deny-extraction
   - deny-pipelines
   - disk-data-classification
