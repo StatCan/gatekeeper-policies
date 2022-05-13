@@ -17,6 +17,8 @@ We recommend installing the following software locally to test your rego policie
 
 ## How to Contribute
 
+> TODO: update with Taskfile commands once it is set up
+
 1. Create a folder in this repository with a semantically meaningful name (i.e. it should be clear from the name what the policy relates to). Additionally, you should place your policy under the broader category that it relates to (e.g. `pod-security-policy`).
 2. In your folder, create a file called `src.rego`. Structure your `src.rego` file in the way shown below; this allows `ConstraintTemplates` and `Constraints` to be automatically generated from your rego policy.
 
@@ -57,7 +59,9 @@ test_short_description_of_what_this_is_testing {
 }
 ```
 
-4.
+4. Run `opa test -v .` to test (in verbose mode) the rego policy in the current directory. The output will indicate whether all of the opa unit tests are passing.
+5. Run `konstraint create src.rego --skip-constraints` to auto-generate the `template.yaml` file containing the `ConstraintTemplate` for the current Gatekeeper policy.
+6. Run `konstraint doc src.rego --output README.md` to auto-generate documentation for the current Gatekeeper policy.
 
 ## General
 
