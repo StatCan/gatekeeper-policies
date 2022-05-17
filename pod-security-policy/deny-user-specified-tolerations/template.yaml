@@ -2,12 +2,12 @@ apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   creationTimestamp: null
-  name: .
+  name: denyuserspecifiedtolerations
 spec:
   crd:
     spec:
       names:
-        kind: .
+        kind: DenyUserSpecifiedTolerations
   targets:
   - rego: |-
       package deny_user_pod_system_node
