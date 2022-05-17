@@ -60,7 +60,7 @@ test_short_description_of_what_this_is_testing {
 ```
 
 4. Run `opa test -v .` to test (in verbose mode) the rego policy in the current directory. The output will indicate whether all of the opa unit tests are passing.
-5. Run `konstraint create src.rego --skip-constraints` to auto-generate the `template.yaml` file containing the `ConstraintTemplate` for the current Gatekeeper policy.
+5. Run `konstraint create src.rego` to auto-generate the `template.yaml` and `constraint.yaml` files containing the `ConstraintTemplate` and `Constraint` for the current Gatekeeper policy. Note that `*constraint.yaml` is in the `.gitignore` at
 6. Run `konstraint doc src.rego --output README.md` to auto-generate documentation for the current Gatekeeper policy.
 
 ## General
