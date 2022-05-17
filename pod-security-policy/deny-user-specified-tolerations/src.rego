@@ -3,7 +3,7 @@
 # A number of user-specified tolerations should be rejected as these
 # tolerations can be used to schedule a user pod to an inappropriate node pool.
 # In particular, the following scenarios need to be checked:
-
+#
 # 1. If a user pod (i.e. namespace != "system") is submitted with the toleration
 #    `node.statcan.gc.ca/purpose=system:NoSchedule`, then the request must be denied
 #    as the user pod may be scheduled onto a system nodepool.
