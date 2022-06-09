@@ -425,7 +425,7 @@ test_vs_allowed {
 	result == set()
 }
 
-# Test for a VS woth a wront host.
+# Test for a VS with a wrong host.
 test_vs_wrong_host {
 	vs_review := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -703,6 +703,557 @@ test_vs_regex {
 	exemptions := [""]
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+
+	#Empty set means no violations
+	result == set()
+}
+
+# Test for an Ingress hostname conflicting with another namespace
+test_ingress_hostname_conflicts {
+	existing_ingress := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "red.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_ingress2 := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "notred.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_vs := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com"],
+			"http": [{
+					"match": [{
+						"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	existing_vs2 := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs2",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com", "redder.test.com"],
+			"http": [{
+					"match": [{
+						"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	new_ingress := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "red-ingress-from-blue",
+					"namespace": "blue",
+				},
+				"spec": {"rules": [{
+					"host": "red.test.com",
+					"http": {"paths": [
+						{
+							"path": "/finance",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+					]},
+				}]},
+			},
+		},
+	}
+
+	exemptions := ["*.test.com"]
+
+	result := violation with input as new_ingress with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress"] as existing_ingress with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress2"] as existing_ingress2 with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs"] as existing_vs with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs2"] as existing_vs2 with input.parameters.exemptions as exemptions
+
+	#Empty set means no violations
+	print(result)
+	count(result) > 0
+}
+
+# Test for permitted Ingress hostname conflict with another namespace
+test_allowed_ingress_hostname_conflicts {
+	existing_ingress := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "red.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_ingress2 := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "notred.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_vs := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com"],
+			"http": [{
+					"match": [{
+						"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	existing_vs2 := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs2",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com", "redder.test.com"],
+			"http": [{
+					"match": [{
+						"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	new_ingress := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "red-ingress-from-blue",
+					"namespace": "blue",
+				},
+				"spec": {"rules": [{
+					"host": "red.test.com",
+					"http": {"paths": [
+						{
+							"path": "/finance",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+					]},
+				}]},
+			},
+		},
+	}
+
+	exemptions := ["*.test.com"]
+
+	namespaces := {"blue": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "red.test.com","path":"/finance"}]`},
+			"name": "blue",
+		},
+	}}
+
+	result := violation with input as new_ingress with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress"] as existing_ingress with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress2"] as existing_ingress2 with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs"] as existing_vs with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs2"] as existing_vs2 with input.parameters.exemptions as exemptions with data.inventory.cluster.v1.Namespace as namespaces
+
+	#Empty set means no violations
+	result == set()
+}
+
+# Test for a VirtualService hostname conflicting with another namespace
+test_vs_hostname_conflicts {
+	existing_ingress := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "red.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_ingress2 := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "notred.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_vs := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com"],
+			"http": [{
+					"match": [{
+						"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	existing_vs2 := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs2",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com"],
+			"http": [{
+					"match": [{
+							"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	new_vs := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "red-vs-from-blue",
+					"namespace": "blue",
+				},
+				"spec": {
+					"hosts": ["blue.test.com", "red.test.com"],
+					"http": [{"match": [{"uri": {"prefix": "/finance"}}, {"uri": {"exact": "/finance"}}, {"uri": {"regex": "^/finance"}}]}],
+					"tcp": [{"route": [{"destination": {"host": "red.red.scv.cluster.local"}}]}],
+					"tls": [{"match": [{"sniHosts": ["red.red.scv.cluster.local"]}]}],
+				},
+			},
+		},
+	}
+
+	exemptions := ["*.test.com"]
+
+	result := violation with input as new_vs with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress"] as existing_ingress with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress2"] as existing_ingress2 with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs"] as existing_vs with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs2"] as existing_vs2 with input.parameters.exemptions as exemptions
+
+	print(result)
+	count(result) > 0
+}
+
+# Test for for permitted VirtualService hostname conflict with another namespace
+test_allowed_vs_hostname_conflicts {
+	existing_ingress := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "red.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_ingress2 := {
+		"apiVersion": "networking.k8s.io/v1",
+		"kind": "Ingress",
+		"metadata": {
+		"name": "red_ingress",
+		"namespace": "red",
+		},
+		"spec": {"rules": [{
+			"host": "notred.test.com",
+			"http": {"paths": [
+				{
+					"path": "/finance",
+					"backend": {
+						"serviceName": "banking",
+						"servicePort": 443,
+					},
+				},
+			]},
+		}]},
+	}
+
+	existing_vs := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com"],
+			"http": [{
+					"match": [{
+						"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	existing_vs2 := {
+		"apiVersion": "networking.istio.io/v1beta1",
+		"kind": "VirtualService",
+		"metadata": {
+		"name": "red_vs2",
+		"namespace": "red",
+		},
+		"spec": {"gateways": [
+			"ingress-general-system/general-istio-ingress-gateway-https"],
+			"hosts": ["red.test.com"],
+			"http": [{
+					"match": [{
+							"authority": {"exact": "red.test.com"},
+						"uri": {"prefix": "/"}
+					}],
+					"route": [{
+						"destination": {
+							"host": "red.red.svc.cluster.local",
+							"port": {"number": 9080}
+							},
+						"weight": 100
+					}]
+				}]},
+	}
+
+	new_vs := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "red-vs-from-blue",
+					"namespace": "blue",
+				},
+				"spec": {
+					"hosts": ["blue.test.com", "red.test.com"],
+					"http": [{"match": [{"uri": {"prefix": "/finance"}}, {"uri": {"exact": "/finance"}}, {"uri": {"regex": "^/finance"}}]}],
+					"tcp": [{"route": [{"destination": {"host": "red.red.scv.cluster.local"}}]}],
+					"tls": [{"match": [{"sniHosts": ["red.red.scv.cluster.local"]}]}],
+				},
+			},
+		},
+	}
+
+	namespaces := {"blue": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "red.test.com","path":"/finance"}]`},
+			"name": "blue",
+		},
+	}}
+
+	exemptions := ["*.test.com"]
+
+	result := violation with input as new_vs with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress"] as existing_ingress with data.inventory.namespace["red"]["networking.k8s.io/v1"]["Ingress"]["red_ingress2"] as existing_ingress2 with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs"] as existing_vs with data.inventory.namespace["red"]["networking.istio.io/v1beta1"]["VirtualService"]["red_vs2"] as existing_vs2 with input.parameters.exemptions as exemptions with data.inventory.cluster.v1.Namespace as namespaces
 
 	#Empty set means no violations
 	result == set()
