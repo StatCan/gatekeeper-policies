@@ -1,5 +1,4 @@
 package restricthostnames
-import future.keywords.in
 
 # Annotation which contains JSON information about exempted Hosts and Paths
 # JSON structure is as follows:
