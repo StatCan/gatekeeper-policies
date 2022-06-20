@@ -836,7 +836,7 @@ test_ingress_hostname_conflicts {
 
 	result := violation with input as new_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions
 
-	#Empty set means no violations
+	# Duplicate hostname violation expected
 	print(result)
 	count(result) > 0
 }
@@ -1106,6 +1106,7 @@ test_vs_hostname_conflicts {
 
 	result := violation with input as new_vs with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions
 
+	# Duplicate hostname violation expected
 	print(result)
 	count(result) > 0
 }
