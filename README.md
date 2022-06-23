@@ -13,6 +13,7 @@ This repo contains general policies that can be used to enforce common Kubernete
 | Container Allowed Images         | [container-allowed-images](general/container-allowed-images)                 |
 | Container Image Must Have Digest | [container-image-must-have-digest](general/container-image-must-have-digest) |
 | Container Limits                 | [container-limits](general/container-limits)                                 |
+| Deny External Users              | [deny-external-users](general/deny-external-users)                                 |
 | Ingress No Hostnames             | [ingress-no-hostnames](general/ingress-no-hostnames)                         |
 | Ingress Hostnames Conflict       | [ingress-hostnames-conflict](general/ingress-hostnames-conflict)             |
 | Load Balancer No Public IPs      | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips)             |
@@ -37,6 +38,7 @@ This repo contains common policies replacing the deprecated `PodSecurityPolicy` 
 | Block host namespace               | [block-host-namespace](pod-security-policy/block-host-namespace)                           |
 | Container capabilities             | [container-capabilities](pod-security-policy/container-capabilities)                       |
 | Container no privilege escalation  | [container-no-privilege-escalation](pod-security-policy/container-no-privilege-escalation) |
+| Deny Employee-Only Features        | [deny-employee-only-features](pod-security-policy/deny-employee-only-features)             |
 | Deny extraction                    | [deny-extraction](pod-security-policy/deny-extraction)                                     |
 | Deny pipelines                     | [deny-pipelines](pod-security-policy/deny-pipelines)                                       |
 | Disk data classification           | [disk-data-classification](pod-security-policy/disk-data-classification)                   |

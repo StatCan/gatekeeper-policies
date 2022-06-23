@@ -1,0 +1,25 @@
+apiVersion: kubeflow.org/v1
+kind: Notebook
+metadata:
+  labels:
+    state.aaw.statcan.gc.ca/non-employee-users: "false"
+  name: tom-allowed
+  namespace: tom
+spec:
+  template:
+    spec:
+      containers:
+      - env:
+        - name: KF_LANG
+          value: en
+        image: k8scc01covidacr.azurecr.io/sas:0123
+        name: tom-allowed
+        resources:
+          limits:
+            cpu: "100m"
+            memory: 30Mi
+          requests:
+            cpu: "100m"
+            memory: 30Mi
+      serviceAccountName: default-editor
+      volumes: []
