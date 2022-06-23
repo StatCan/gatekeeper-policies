@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: RestrictHostnames
+metadata:
+  name: restrict-hostnames
+spec:
+  match:
+    kinds:
+      - apiGroups: ["networking.k8s.io"]
+        kinds: ["Ingress"]
+      - apiGroups: ["networking.istio.io"]
+        kinds: ["VirtualService"]
+  parameters:
+    exemptions:
+      - '*.example.ca'

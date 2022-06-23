@@ -25,7 +25,7 @@ bases:
   - container-image-must-have-digest
   - container-limits
   - deny-external-users
-  - ingress-hostnames-conflict
   - ingress-no-hostnames
   - loadbalancer-no-public-ips
   - pod-enforce-labels
+  - restrict-hostnames
