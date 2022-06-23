@@ -24,11 +24,6 @@ normalize_hosts(hosts) = normalized_hosts {
 	]
 }
 
-identical(obj, review) {
-	obj.metadata.namespace == review.object.metadata.namespace
-	obj.metadata.name == review.object.metadata.name
-}
-
 # Exemptions for hosts passed in via the configuration of the Policy
 is_exempt(host) {
 	exemption := input.parameters.exemptions[_]
@@ -101,8 +96,41 @@ violation[{"msg": msg}] {
 
 		hostpath := is_invalid(host, path)
 	}
-	
+
 	count(invalid_hostpaths) > 0
 
 	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v", [invalid_hostpaths])
+}
+
+# Hostname conflict with other namespace Ingress(es) or VirtualService(s) and hostpath not allowed
+violation[{"msg": msg}] {
+	kind := input.review.kind.kind
+	re_match("^(Ingress|VirtualService)$", kind)
+	re_match("^(networking.k8s.io|networking.istio.io)$", input.review.kind.group)
+
+	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
+	host := hosts[_]
+	paths := ({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
+	path := paths[_]
+
+	not is_allowed(host, path)
+
+	ingress_conflicts := {output |
+		conflict := data.inventory.namespace[other_namespace]["networking.k8s.io/v1"].Ingress[other_name]
+		conflict.spec.rules[_].host == host
+		conflict.metadata.namespace != input.review.object.metadata.namespace
+		output := concat("/", ["Ingress", other_namespace, other_name])
+	}
+
+	vs_conflicts := {output |
+		conflict := data.inventory.namespace[other_namespace]["networking.istio.io/v1beta1"].VirtualService[other_name]
+		conflict.spec.hosts[_] == host
+		conflict.metadata.namespace != input.review.object.metadata.namespace
+		output := concat("/", ["VirtualService", other_namespace, other_name])
+	}
+
+	conflicts := ingress_conflicts | vs_conflicts
+
+	count(conflicts) > 0
+	msg := sprintf("%v hostname %v conflicts with existing object(s) in other namespace(s): %v", [kind, host, conflicts])
 }
