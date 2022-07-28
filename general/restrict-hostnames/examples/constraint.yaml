@@ -10,6 +10,8 @@ spec:
       - apiGroups: ["networking.istio.io"]
         kinds: ["VirtualService"]
   parameters:
+    # Hostnames that should be exempt from the policy. Glob patterns can be specified.
     exemptions:
       - '*.example.ca'
+    # Extra information that should be appended to the error message.
     errorMsgAdditionalDetails: ""
