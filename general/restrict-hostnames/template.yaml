@@ -104,7 +104,7 @@ spec:
 
           count(invalid_hostpaths) > 0
 
-          msg := sprintf("hostpaths in the ingress are not valid for this namespace: %v. %v", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
+          msg := sprintf("hostpaths in the ingress are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
         }
 
         # Virtual Service
@@ -124,7 +124,7 @@ spec:
 
           count(invalid_hostpaths) > 0
 
-          msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v. %v", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
+          msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
         }
 
         # Hostname conflict with other namespace Ingress(es) or VirtualService(s) and hostpath not allowed
@@ -157,5 +157,5 @@ spec:
           conflicts := ingress_conflicts | vs_conflicts
 
           count(conflicts) > 0
-          msg := sprintf("%v hostname %v conflicts with existing object(s) in other namespace(s): %v. %v", [kind, host, conflicts, input.parameters.errorMsgAdditionalDetails])
+          msg := sprintf("%v hostname %v conflicts with existing object(s) in other namespace(s): %v. %s", [kind, host, conflicts, input.parameters.errorMsgAdditionalDetails])
         }
