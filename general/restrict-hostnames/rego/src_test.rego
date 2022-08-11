@@ -374,7 +374,7 @@ test_ingress_exempt {
 
 	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
 }
 
@@ -421,7 +421,7 @@ test_vs_allowed {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
 }
 
@@ -515,7 +515,7 @@ test_vs_multi_host_fail {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
-	#Empty set means no violations
+	# Empty set means no violations
 	print(result)
 	count(result) > 0
 }
@@ -563,7 +563,7 @@ test_vs_multi_host {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
 }
 
@@ -657,7 +657,7 @@ test_vs_exempt_namespace_hosts {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
 }
 
@@ -704,7 +704,7 @@ test_vs_regex {
 
 	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
 }
 
@@ -978,7 +978,7 @@ test_allowed_ingress_hostname_conflicts {
 
 	result := violation with input as new_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions with data.inventory.cluster.v1.Namespace as namespaces
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
 }
 
@@ -1111,7 +1111,7 @@ test_vs_hostname_conflicts {
 	count(result) > 0
 }
 
-# Test for for permitted VirtualService hostname conflict with another namespace
+# Test for permitted VirtualService hostname conflict with another namespace
 test_allowed_vs_hostname_conflicts {
 	existing_ingress := {
 		"apiVersion": "networking.k8s.io/v1",
@@ -1244,6 +1244,53 @@ test_allowed_vs_hostname_conflicts {
 
 	result := violation with input as new_vs with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions with data.inventory.cluster.v1.Namespace as namespaces
 
-	#Empty set means no violations
+	# Empty set means no violations
 	result == set()
+}
+
+# Test for ingress with unallowed host and no path
+test_ingress_unallowed_host_no_path {
+	ingress := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "unallowedtest",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"host": "unallowedtest.com",
+					"http": {"paths": [
+						{
+							"pathType": "ImplementationSpecific",
+							"backend": {
+								"service": {
+									"name": "unallowedtest",
+									"port": {
+										"number": 443
+									}
+								}
+							},
+						},
+					]},
+				}]},
+			},
+		},
+	}
+
+	result := violation with input as ingress with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Violation expected
+	print(result)
+	count(result) > 0
 }
