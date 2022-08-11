@@ -252,7 +252,7 @@ test_ingress_unallowed_path {
 		},
 	}}
 
-	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	# 1 message for /other which is not allowed.
 	print(result)
@@ -311,7 +311,7 @@ test_ingress_no_annotation {
 		},
 	}}
 
-	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	# result with entry means there was a violation
 	print(result)
@@ -466,7 +466,7 @@ test_vs_wrong_host {
 
 	exemptions := [""]
 
-	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	count(result) > 0
 	print(result)
@@ -513,7 +513,7 @@ test_vs_multi_host_fail {
 
 	exemptions := [""]
 
-	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	#Empty set means no violations
 	print(result)
@@ -608,7 +608,7 @@ test_vs_no_annotation {
 
 	exemptions := [""]
 
-	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions
+	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	count(result) > 0
 	print(result)
@@ -834,7 +834,7 @@ test_ingress_hostname_conflicts {
 
 	exemptions := ["*.test.com"]
 
-	result := violation with input as new_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions
+	result := violation with input as new_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	# Duplicate hostname violation expected
 	print(result)
@@ -1104,7 +1104,7 @@ test_vs_hostname_conflicts {
 
 	exemptions := ["*.test.com"]
 
-	result := violation with input as new_vs with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions
+	result := violation with input as new_vs with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress as existing_ingress with data.inventory.namespace.red["networking.k8s.io/v1"].Ingress.red_ingress2 as existing_ingress2 with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs as existing_vs with data.inventory.namespace.red["networking.istio.io/v1beta1"].VirtualService.red_vs2 as existing_vs2 with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	# Duplicate hostname violation expected
 	print(result)
