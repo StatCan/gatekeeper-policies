@@ -1270,19 +1270,13 @@ test_ingress_unallowed_host_no_path {
 				},
 				"spec": {"rules": [{
 					"host": "unallowedtest.com",
-					"http": {"paths": [
-						{
-							"pathType": "ImplementationSpecific",
-							"backend": {
-								"service": {
-									"name": "unallowedtest",
-									"port": {
-										"number": 443
-									}
-								}
-							},
-						},
-					]},
+					"http": {"paths": [{
+						"pathType": "ImplementationSpecific",
+						"backend": {"service": {
+							"name": "unallowedtest",
+							"port": {"number": 443},
+						}},
+					}]},
 				}]},
 			},
 		},
