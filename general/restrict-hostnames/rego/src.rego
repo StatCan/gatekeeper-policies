@@ -72,7 +72,8 @@ violation[{"msg": msg}] {
 	invalid_hostpaths := {hostpath |
 		rule := input.review.object.spec.rules[_]
 		host := rule.host
-		path := rule.http.paths[_].path
+		paths := ({path | path := rule.http.paths[_].path} | {path | path := ""})
+		path := paths[_]
 
 		hostpath := is_invalid(host, path)
 	}
