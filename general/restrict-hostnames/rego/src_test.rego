@@ -78,7 +78,7 @@ test_ingress_allow_all {
 		},
 	}}
 
-	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
 	# If result set is empty, no violations
 	result == set()
@@ -136,7 +136,7 @@ test_ingress_case_mismatch {
 		},
 	}}
 
-	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces
 
 	# If result set is empty, no violations
 	result == set()
