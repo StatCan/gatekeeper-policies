@@ -1248,7 +1248,7 @@ test_allowed_vs_hostname_conflicts {
 	result == set()
 }
 
-# Test for ingress with unallowed host and no path
+# Test for Ingress with unallowed host and no path
 test_ingress_unallowed_host_no_path {
 	ingress := {
 		"apiVersion": "admission.k8s.io/v1beta1",
@@ -1265,7 +1265,7 @@ test_ingress_unallowed_host_no_path {
 			},
 			"object": {
 				"metadata": {
-					"name": "unallowedtest",
+					"name": "unallowed-ingress",
 					"namespace": "test",
 				},
 				"spec": {"rules": [{
@@ -1283,6 +1283,43 @@ test_ingress_unallowed_host_no_path {
 	}
 
 	result := violation with input as ingress with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Violation expected
+	print(result)
+	count(result) > 0
+}
+
+# Test for VirtualService with unallowed host and no path
+test_vs_unallowed_host_no_path {
+	vs := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "unallowed-vs",
+					"namespace": "test",
+				},
+				"spec": {
+					"hosts": ["nope.com", "nah.com", "ok.test.com"],
+					"http": [{"route": [{"destination": {"host": "myservice"}}]}],
+				},
+			},
+		},
+	}
+
+	exemptions := ["*.test.com"]
+
+	result := violation with input as vs with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
 	# Violation expected
 	print(result)
