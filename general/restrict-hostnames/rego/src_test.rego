@@ -200,6 +200,57 @@ test_ingress_empty_path {
 	result == set()
 }
 
+# Test for ingress with allowed path.
+test_ingress_allowed_path {
+	ingress := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "prod",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"host": "test.com",
+					"http": {"paths": [
+						{
+							"path": "/finance",
+							"backend": {
+								"serviceName": "banking",
+								"servicePort": 443,
+							},
+						},
+					]},
+				}]},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/finance"}]`},
+			"name": "test",
+		},
+	}}
+
+	result := violation with input as ingress with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Empty set means no violations
+	result == set()
+}
+
 # Test for ingress with 2 paths, one of which is not allowed.
 test_ingress_unallowed_path {
 	ingress := {
