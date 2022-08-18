@@ -122,6 +122,25 @@ violation[{"msg": msg}] {
 	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
 }
 
+# Pathless Virtual Service
+violation[{"msg": msg}] {
+	input.review.kind.kind == "VirtualService"
+	input.review.kind.group == "networking.istio.io"
+
+	# Gather all invalid host and path combinations
+	invalid_hostpaths := {hostpath |
+		count(({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}) = 0
+
+		host := input.review.object.spec.hosts[_]
+
+		hostpath := is_invalid(host, "")
+	}
+
+	count(invalid_hostpaths) > 0
+
+	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
+}
+
 # Hostname conflict with other namespace Ingress(es) or VirtualService(s) and hostpath not allowed
 violation[{"msg": msg}] {
 	kind := input.review.kind.kind
