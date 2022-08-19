@@ -73,28 +73,9 @@ violation[{"msg": msg}] {
 	invalid_hostpaths := {hostpath |
 		rule := input.review.object.spec.rules[_]
 		host := rule.host
-		path := rule.http.paths[_].path
+		path := object.get(rule.http.paths[_], "path", "")
 
 		hostpath := is_invalid(host, path)
-	}
-
-	count(invalid_hostpaths) > 0
-
-	msg := sprintf("hostpaths in the ingress are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
-}
-
-# Pathless Ingress
-violation[{"msg": msg}] {
-	input.review.kind.kind == "Ingress"
-	input.review.kind.group == "networking.k8s.io"
-
-	# Gather all invalid host and path combinations
-	invalid_hostpaths := {hostpath |
-		rule := input.review.object.spec.rules[_]
-		host := rule.host
-		count({path | path := rule.http.paths[_].path}) = 0
-
-		hostpath := is_invalid(host, "")
 	}
 
 	count(invalid_hostpaths) > 0
