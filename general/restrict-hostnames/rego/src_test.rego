@@ -872,11 +872,11 @@ test_ingress_hostname_conflicts {
 				"spec": {"rules": [{
 					"host": "red.test.com",
 					"http": {"paths": [{
-						"path": "/finance",
-						"backend": {
-							"serviceName": "banking",
-							"servicePort": 443,
-						},
+						"pathType": "ImplementationSpecific",
+						"backend": {"service": {
+							"name": "red-from-blue",
+							"port": {"number": 443},
+						}},
 					}]},
 				}]},
 			},
