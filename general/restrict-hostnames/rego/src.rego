@@ -173,3 +173,36 @@ violation[{"msg": msg}] {
 	count(conflicts) > 0
 	msg := sprintf("%v hostname %v conflicts with existing object(s) in other namespace(s): %v. %s", [kind, host, conflicts, input.parameters.errorMsgAdditionalDetails])
 }
+
+# Pathless hostname conflict with other namespace Ingress(es) or VirtualService(s) and hostpath not allowed
+violation[{"msg": msg}] {
+	kind := input.review.kind.kind
+	re_match("^(Ingress|VirtualService)$", kind)
+	re_match("^(networking.k8s.io|networking.istio.io)$", input.review.kind.group)
+
+	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
+	host := hosts[_]
+	paths := ({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
+	count(paths) = 0
+
+	not is_allowed(host, "")
+
+	ingress_conflicts := {output |
+		conflict := data.inventory.namespace[other_namespace]["networking.k8s.io/v1"].Ingress[other_name]
+		conflict.spec.rules[_].host == host
+		conflict.metadata.namespace != input.review.object.metadata.namespace
+		output := concat("/", ["Ingress", other_namespace, other_name])
+	}
+
+	vs_conflicts := {output |
+		conflict := data.inventory.namespace[other_namespace]["networking.istio.io/v1beta1"].VirtualService[other_name]
+		conflict.spec.hosts[_] == host
+		conflict.metadata.namespace != input.review.object.metadata.namespace
+		output := concat("/", ["VirtualService", other_namespace, other_name])
+	}
+
+	conflicts := ingress_conflicts | vs_conflicts
+
+	count(conflicts) > 0
+	msg := sprintf("Pathless %v hostname %v conflicts with existing object(s) in other namespace(s): %v. %s", [kind, host, conflicts, input.parameters.errorMsgAdditionalDetails])
+}
