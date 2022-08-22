@@ -222,15 +222,13 @@ test_ingress_allowed_path {
 				},
 				"spec": {"rules": [{
 					"host": "test.com",
-					"http": {"paths": [
-						{
-							"path": "/finance",
-							"backend": {
-								"serviceName": "banking",
-								"servicePort": 443,
-							},
+					"http": {"paths": [{
+						"path": "/finance",
+						"backend": {
+							"serviceName": "banking",
+							"servicePort": 443,
 						},
-					]},
+					}]},
 				}]},
 			},
 		},
