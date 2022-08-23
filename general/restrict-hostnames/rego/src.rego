@@ -72,7 +72,7 @@ violation[{"msg": msg}] {
 	invalid_hostpaths := {hostpath |
 		rule := input.review.object.spec.rules[_]
 		host := rule.host
-		path := object.get(rule.http.paths[_], "path", "")
+		path := object.get(rule.http.paths[_], "path", "/")
 
 		hostpath := is_invalid(host, path)
 	}
@@ -109,11 +109,11 @@ violation[{"msg": msg}] {
 
 	# Gather all invalid host and path combinations
 	invalid_hostpaths := {hostpath |
-		count(({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}) = 0
+		count(({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}) == 0
 
 		host := input.review.object.spec.hosts[_]
 
-		hostpath := is_invalid(host, "")
+		hostpath := is_invalid(host, "/")
 	}
 
 	count(invalid_hostpaths) > 0
@@ -163,9 +163,9 @@ violation[{"msg": msg}] {
 	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
 	host := hosts[_]
 	paths := ({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
-	count(paths) = 0
+	count(paths) == 0
 
-	not is_allowed(host, "")
+	not is_allowed(host, "/")
 
 	ingress_conflicts := {output |
 		conflict := data.inventory.namespace[other_namespace]["networking.k8s.io/v1"].Ingress[other_name]
