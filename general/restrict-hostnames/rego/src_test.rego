@@ -1374,3 +1374,49 @@ test_vs_unallowed_host_no_path {
 	print(result)
 	count(result) > 0
 }
+
+# Test for an allowed VS which sets a host but not matches on the path.
+# This is effectively the same as `test.com` is effectively the same as `test.com/` since the `/` is a seperator in our prefix strategy.
+test_vs_allowed_no_path {
+	vs_review := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {
+					"hosts": ["test.com"],
+					"http": [],
+				},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/"}]`},
+			"name": "test",
+		},
+	}}
+
+	exemptions := [""]
+
+	result := violation with input as vs_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Empty set means no violations
+	result == set()
+}
