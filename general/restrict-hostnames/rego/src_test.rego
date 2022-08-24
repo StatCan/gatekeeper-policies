@@ -1515,7 +1515,7 @@ test_ingress_not_allowed_no_host {
 		},
 	}}
 
-	exemptions := [""]
+	exemptions := ["test.com"]
 
 	result := violation with input as ingress_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
@@ -1566,7 +1566,7 @@ test_ingress_not_allowed_no_host_2 {
 		},
 	}}
 
-	exemptions := [""]
+	exemptions := ["test.com"]
 
 	result := violation with input as ingress_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 

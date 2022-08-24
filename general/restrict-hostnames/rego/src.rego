@@ -54,6 +54,7 @@ is_allowed(host, path) {
 
 # Determines if a host and path combination is invalid and returns a concatenated response.
 is_invalid(host, path) = invalid {
+
 	# Check if the hostname is exempt
 	not is_exempt(host)
 
@@ -71,7 +72,7 @@ violation[{"msg": msg}] {
 	# Gather all invalid host and path combinations
 	invalid_hostpaths := {hostpath |
 		rule := input.review.object.spec.rules[_]
-		host := rule.host
+		host := object.get(rule, "host", "")
 		path := object.get(rule.http.paths[_], "path", "/")
 
 		hostpath := is_invalid(host, path)
