@@ -54,7 +54,6 @@ is_allowed(host, path) {
 
 # Determines if a host and path combination is invalid and returns a concatenated response.
 is_invalid(host, path) = invalid {
-
 	# Check if the hostname is exempt
 	not is_exempt(host)
 

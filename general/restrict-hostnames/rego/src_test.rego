@@ -1492,16 +1492,14 @@ test_ingress_not_allowed_no_host {
 					"name": "test",
 					"namespace": "test",
 				},
-				"spec": {"rules": [{
-					"http": {"paths": [{
-						"path": "/test",
-						"pathType": "ImplementationSpecific",
-						"backend": {"service": {
-							"name": "test",
-							"port": {"number": 443},
-						}},
-					}]},
-				}]},
+				"spec": {"rules": [{"http": {"paths": [{
+					"path": "/test",
+					"pathType": "ImplementationSpecific",
+					"backend": {"service": {
+						"name": "test",
+						"port": {"number": 443},
+					}},
+				}]}}]},
 			},
 		},
 	}
@@ -1543,16 +1541,14 @@ test_ingress_not_allowed_no_host_2 {
 					"name": "test",
 					"namespace": "test",
 				},
-				"spec": {"rules": [{
-					"http": {"paths": [{
-						"path": "/test",
-						"pathType": "ImplementationSpecific",
-						"backend": {"service": {
-							"name": "test",
-							"port": {"number": 443},
-						}},
-					}]},
-				}]},
+				"spec": {"rules": [{"http": {"paths": [{
+					"path": "/test",
+					"pathType": "ImplementationSpecific",
+					"backend": {"service": {
+						"name": "test",
+						"port": {"number": 443},
+					}},
+				}]}}]},
 			},
 		},
 	}
@@ -1594,16 +1590,14 @@ test_ingress_allowed_no_host {
 					"name": "test",
 					"namespace": "test",
 				},
-				"spec": {"rules": [{
-					"http": {"paths": [{
-						"path": "/test",
-						"pathType": "ImplementationSpecific",
-						"backend": {"service": {
-							"name": "test",
-							"port": {"number": 443},
-						}},
-					}]},
-				}]},
+				"spec": {"rules": [{"http": {"paths": [{
+					"path": "/test",
+					"pathType": "ImplementationSpecific",
+					"backend": {"service": {
+						"name": "test",
+						"port": {"number": 443},
+					}},
+				}]}}]},
 			},
 		},
 	}
