@@ -1472,3 +1472,155 @@ test_ingress_allowed_no_path {
 	# Empty set means no violations
 	result == set()
 }
+
+test_ingress_not_allowed_no_host {
+	ingress_review := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"http": {"paths": [{
+						"path": "/test",
+						"pathType": "ImplementationSpecific",
+						"backend": {"service": {
+							"name": "test",
+							"port": {"number": 443},
+						}},
+					}]},
+				}]},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/"}]`},
+			"name": "test",
+		},
+	}}
+
+	exemptions := ["finance.com"]
+
+	result := violation with input as ingress_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Violation expected
+	print(result)
+	count(result) > 0
+}
+
+test_ingress_not_allowed_no_host_2 {
+	ingress_review := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"http": {"paths": [{
+						"path": "/test",
+						"pathType": "ImplementationSpecific",
+						"backend": {"service": {
+							"name": "test",
+							"port": {"number": 443},
+						}},
+					}]},
+				}]},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "*","path":"/"}]`},
+			"name": "test",
+		},
+	}}
+
+	exemptions := ["test.com"]
+
+	result := violation with input as ingress_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Violation expected
+	print(result)
+	count(result) > 0
+}
+
+test_ingress_allowed_no_host {
+	ingress_review := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.k8s.io",
+				"kind": "Ingress",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {"rules": [{
+					"http": {"paths": [{
+						"path": "/test",
+						"pathType": "ImplementationSpecific",
+						"backend": {"service": {
+							"name": "test",
+							"port": {"number": 443},
+						}},
+					}]},
+				}]},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "","path":""}]`},
+			"name": "test",
+		},
+	}}
+
+	exemptions := [""]
+
+	result := violation with input as ingress_review with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Empty set means no violations
+	result == set()
+}
