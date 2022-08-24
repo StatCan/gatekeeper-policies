@@ -1492,16 +1492,14 @@ test_ingress_not_allowed_no_host {
 					"name": "test",
 					"namespace": "test",
 				},
-				"spec": {"rules": [{
-					"http": {"paths": [{
-						"path": "/test",
-						"pathType": "ImplementationSpecific",
-						"backend": {"service": {
-							"name": "test",
-							"port": {"number": 443},
-						}},
-					}]},
-				}]},
+				"spec": {"rules": [{"http": {"paths": [{
+					"path": "/test",
+					"pathType": "ImplementationSpecific",
+					"backend": {"service": {
+						"name": "test",
+						"port": {"number": 443},
+					}},
+				}]}}]},
 			},
 		},
 	}
@@ -1543,16 +1541,14 @@ test_ingress_not_allowed_no_host_2 {
 					"name": "test",
 					"namespace": "test",
 				},
-				"spec": {"rules": [{
-					"http": {"paths": [{
-						"path": "/test",
-						"pathType": "ImplementationSpecific",
-						"backend": {"service": {
-							"name": "test",
-							"port": {"number": 443},
-						}},
-					}]},
-				}]},
+				"spec": {"rules": [{"http": {"paths": [{
+					"path": "/test",
+					"pathType": "ImplementationSpecific",
+					"backend": {"service": {
+						"name": "test",
+						"port": {"number": 443},
+					}},
+				}]}}]},
 			},
 		},
 	}
@@ -1594,16 +1590,14 @@ test_ingress_allowed_no_host {
 					"name": "test",
 					"namespace": "test",
 				},
-				"spec": {"rules": [{
-					"http": {"paths": [{
-						"path": "/test",
-						"pathType": "ImplementationSpecific",
-						"backend": {"service": {
-							"name": "test",
-							"port": {"number": 443},
-						}},
-					}]},
-				}]},
+				"spec": {"rules": [{"http": {"paths": [{
+					"path": "/test",
+					"pathType": "ImplementationSpecific",
+					"backend": {"service": {
+						"name": "test",
+						"port": {"number": 443},
+					}},
+				}]}}]},
 			},
 		},
 	}
@@ -1623,4 +1617,51 @@ test_ingress_allowed_no_host {
 
 	# Empty set means no violations
 	result == set()
+}
+
+test_vs_not_allowed_no_host_not_allowed {
+	vs := {
+		"apiVersion": "admission.k8s.io/v1beta1",
+		"kind": "AdmissionReview",
+		"review": {
+			"kind": {
+				"group": "networking.istio.io",
+				"kind": "VirtualService",
+			},
+			"operation": "CREATE",
+			"userInfo": {
+				"groups": null,
+				"username": "alice",
+			},
+			"object": {
+				"metadata": {
+					"name": "test",
+					"namespace": "test",
+				},
+				"spec": {
+					"hosts": [""],
+					"http": [{"match": [{"uri": {"prefix": "/finance"}}, {"uri": {"exact": "/finance"}}, {"uri": {"regex": "^/finance"}}]}],
+					"tcp": [{"route": [{"destination": {"host": "finance.test.scv.cluster.local"}}]}],
+					"tls": [{"match": [{"sniHosts": ["finance.test.scv.cluster.local"]}]}],
+				},
+			},
+		},
+	}
+
+	namespaces := {"test": {
+		"apiVersion": "v1",
+		"kind": "Namespace",
+		"metadata": {
+			"annotations": {"ingress.statcan.gc.ca/allowed-hosts": `[{"host": "test.com","path":"/"}]`},
+			"name": "test",
+		},
+	}}
+
+	exemptions := [""]
+
+	result := violation with input as vs with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
+
+	# Empty set means no violations
+	print(result)
+	count(result) > 0
 }
