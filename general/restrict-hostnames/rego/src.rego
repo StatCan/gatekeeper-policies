@@ -109,8 +109,7 @@ violation[{"msg": msg}] {
 	re_match("^(Ingress|VirtualService)$", kind)
 	re_match("^(networking.k8s.io|networking.istio.io)$", input.review.kind.group)
 
-	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
-	host := hosts[_]
+	host := get_hosts()[_]
 	path := get_paths()[_]
 
 	not is_allowed(host, path)
