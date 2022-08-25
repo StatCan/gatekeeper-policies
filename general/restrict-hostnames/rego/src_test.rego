@@ -1657,7 +1657,7 @@ test_vs_not_allowed_no_host_not_allowed {
 		},
 	}}
 
-	exemptions := [""]
+	exemptions := []
 
 	result := violation with input as vs with data.inventory.cluster.v1.Namespace as namespaces with input.parameters.exemptions as exemptions with input.parameters.errorMsgAdditionalDetails as "(Additional details placeholder)"
 
