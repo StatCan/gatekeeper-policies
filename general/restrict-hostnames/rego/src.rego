@@ -54,7 +54,6 @@ is_allowed(host, path) {
 
 # Determines if a host and path combination is invalid and returns a concatenated response.
 is_invalid(host, path) = invalid {
-
 	# Check if the hostname is exempt
 	not is_exempt(host)
 
@@ -64,62 +63,43 @@ is_invalid(host, path) = invalid {
 	invalid := concat("", [host, path])
 }
 
-# Ingress
+get_paths = paths {
+	count(({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}) > 0
+	paths := ({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
+}
+
+get_paths = paths {
+	count(({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}) == 0
+	paths := ["/"]
+}
+
+get_hosts = hosts {
+	count({host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}) > 0
+	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
+}
+
+get_hosts = hosts {
+	count({host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}) == 0
+	hosts := [""]
+}
+
+# Ingress or VirtualService must have valid hostpaths
 violation[{"msg": msg}] {
-	input.review.kind.kind == "Ingress"
-	input.review.kind.group == "networking.k8s.io"
+	kind := input.review.kind.kind
+	re_match("^(Ingress|VirtualService)$", kind)
+	re_match("^(networking.k8s.io|networking.istio.io)$", input.review.kind.group)
 
 	# Gather all invalid host and path combinations
 	invalid_hostpaths := {hostpath |
-		rule := input.review.object.spec.rules[_]
-		host := object.get(rule, "host", "")
-		path := object.get(rule.http.paths[_], "path", "/")
+		host := get_hosts()[_]
+		path := get_paths()[_]
 
 		hostpath := is_invalid(host, path)
 	}
 
 	count(invalid_hostpaths) > 0
 
-	msg := sprintf("hostpaths in the ingress are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
-}
-
-# Virtual Service
-violation[{"msg": msg}] {
-	input.review.kind.kind == "VirtualService"
-	input.review.kind.group == "networking.istio.io"
-
-	# Gather all invalid host and path combinations
-	invalid_hostpaths := {hostpath |
-		paths := ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
-
-		path := paths[_]
-		host := input.review.object.spec.hosts[_]
-
-		hostpath := is_invalid(host, path)
-	}
-
-	count(invalid_hostpaths) > 0
-
-	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
-}
-
-# Pathless Virtual Service
-violation[{"msg": msg}] {
-	input.review.kind.kind == "VirtualService"
-	input.review.kind.group == "networking.istio.io"
-
-	# Gather all invalid host and path combinations
-	invalid_hostpaths := {hostpath |
-		count(({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix}) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}) == 0
-
-		host := input.review.object.spec.hosts[_]
-
-		hostpath := is_invalid(host, "/")
-	}
-
-	count(invalid_hostpaths) > 0
-
-	msg := sprintf("hostpaths in the virtualservice are not valid for this namespace: %v. %s", [invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
+	msg := sprintf("hostpaths in the %v are not valid for this namespace: %v. %s", [kind, invalid_hostpaths, input.parameters.errorMsgAdditionalDetails])
 }
 
 # Hostname conflict with other namespace Ingress(es) or VirtualService(s) and hostpath not allowed
@@ -128,45 +108,10 @@ violation[{"msg": msg}] {
 	re_match("^(Ingress|VirtualService)$", kind)
 	re_match("^(networking.k8s.io|networking.istio.io)$", input.review.kind.group)
 
-	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
-	host := hosts[_]
-	paths := ({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
-	path := paths[_]
+	host := get_hosts()[_]
+	path := get_paths()[_]
 
 	not is_allowed(host, path)
-
-	ingress_conflicts := {output |
-		conflict := data.inventory.namespace[other_namespace]["networking.k8s.io/v1"].Ingress[other_name]
-		conflict.spec.rules[_].host == host
-		conflict.metadata.namespace != input.review.object.metadata.namespace
-		output := concat("/", ["Ingress", other_namespace, other_name])
-	}
-
-	vs_conflicts := {output |
-		conflict := data.inventory.namespace[other_namespace]["networking.istio.io/v1beta1"].VirtualService[other_name]
-		conflict.spec.hosts[_] == host
-		conflict.metadata.namespace != input.review.object.metadata.namespace
-		output := concat("/", ["VirtualService", other_namespace, other_name])
-	}
-
-	conflicts := ingress_conflicts | vs_conflicts
-
-	count(conflicts) > 0
-	msg := sprintf("%v hostname %v conflicts with existing object(s) in other namespace(s): %v. %s", [kind, host, conflicts, input.parameters.errorMsgAdditionalDetails])
-}
-
-# Pathless hostname conflict with other namespace Ingress(es) or VirtualService(s) and hostpath not allowed
-violation[{"msg": msg}] {
-	kind := input.review.kind.kind
-	re_match("^(Ingress|VirtualService)$", kind)
-	re_match("^(networking.k8s.io|networking.istio.io)$", input.review.kind.group)
-
-	hosts := {host | host := input.review.object.spec.rules[_].host} | {host | host := input.review.object.spec.hosts[_]}
-	host := hosts[_]
-	paths := ({path | path := input.review.object.spec.rules[_].http.paths[_].path} | ({path | path := input.review.object.spec.http[_].match[_].uri.exact} | {path | path := input.review.object.spec.http[_].match[_].uri.prefix})) | {path | path := input.review.object.spec.http[_].match[_].uri.regex}
-	count(paths) == 0
-
-	not is_allowed(host, "/")
 
 	ingress_conflicts := {output |
 		conflict := data.inventory.namespace[other_namespace]["networking.k8s.io/v1"].Ingress[other_name]
