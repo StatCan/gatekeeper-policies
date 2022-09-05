@@ -2,7 +2,7 @@ apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
   labels:
-    feature.aaw.statcan.gc.ca/employee-only: "false"
+    state.aaw.statcan.gc.ca/has-sas-notebook-feature: "false"
   name: bob
 spec:
   owner:

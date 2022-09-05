@@ -2,7 +2,7 @@ apiVersion: kubeflow.org/v1
 kind: Profile
 metadata:
   labels:
-    feature.aaw.statcan.gc.ca/employee-only: "true"
+    state.aaw.statcan.gc.ca/has-sas-notebook-feature: "true"
   name: alice
 spec:
   owner:

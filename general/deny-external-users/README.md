@@ -6,13 +6,9 @@ Checks labels set in Profile to allow RoleBindings and AuthorizationPolicy objec
 
 ### Label Set in Profile
 
-`feature.aaw.statcan.gc.ca/employee-only: "true"` --> deny
+`state.aaw.statcan.gc.ca/has-sas-notebook-feature: "true"` --> deny
 
-`state.aaw.statcan.gc.ca/employee-only-features: "true"` --> deny
-
-`feature.aaw.statcan.gc.ca/employee-only: "false"` --> allow
-
-`state.aaw.statcan.gc.ca/employee-only-features: "false"` --> allow
+`state.aaw.statcan.gc.ca/has-sas-notebook-feature: "false"` --> allow
 
 If the label is not set in the Profile, the fallthrough/default is to allow.
 
@@ -24,12 +20,12 @@ If the User is an internal employee (name/email ends with an accepted domain), t
 
 alice:
 - external user
-- `feature.aaw.statcan.gc.ca/employee-only: "true"`
+- `state.aaw.statcan.gc.ca/has-sas-notebook-feature: "true"`
 - **denied**
 
 bob:
 - external user
-- `feature.aaw.statcan.gc.ca/employee-only: "false"`
+- `state.aaw.statcan.gc.ca/has-sas-notebook-feature: "false"`
 - **allowed**
 
 jo:
@@ -39,5 +35,5 @@ jo:
 
 sam:
 - internal user
-- `feature.aaw.statcan.gc.ca/employee-only: "true"`
+- `state.aaw.statcan.gc.ca/has-sas-notebook-feature: "true"`
 - **allowed** (doesn't matter if the label is present or what it's set to)

@@ -53,7 +53,15 @@ spec:
           msg := sprintf("Profile %v has %v=%v", [ns, profileLabel, profile.metadata.labels[profileLabel]])
         }
 
-        # Ensure only non-internal employees are checked
+        # A user is considered an employee for this feature if one of the following is "true"
+        # (1) user has a domain ending in statcan.gc.ca or cloud.statcan.ca, or
+        # (2) user has a non-employee email, but is in an exception list of allowed users.
         isEmployee(email) {
           endswith(email, concat("@", [input.parameters.employeeDomains[_]]))
+        }
+        isEmployee(email) {
+          # TODO: need to test that this actually works - might need to refactor
+          exceptionList := data.inventory.cluster["v1"]["configmap"]["statcan-system"]["non-employee-exceptions"]["sasNotebookExceptions"]
+          # If the namespace has purpose "system", then this policy does not apply.
+          count([exceptionCase | exceptionCase := exceptionList[_]; exceptionCase == email]) > 0
         }
