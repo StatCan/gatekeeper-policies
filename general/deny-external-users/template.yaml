@@ -20,6 +20,10 @@ spec:
               type: array
               items:
                 type: string
+            sasNotebookExceptions:
+              type: array
+              items:
+                type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
