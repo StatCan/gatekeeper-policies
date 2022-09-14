@@ -1,0 +1,88 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  creationTimestamp: null
+  name: denyuserspecifiedtolerations
+spec:
+  crd:
+    spec:
+      names:
+        kind: DenyUserSpecifiedTolerations
+  targets:
+  - rego: |-
+      package deny_user_pod_system_node
+
+      system_namespace_label = "namespace.statcan.gc.ca/purpose"
+      system_namespace = ["system", "daaas"]
+
+      classification_label = "data.statcan.gc.ca/classification"
+
+      is_system_namespace(pod) {
+        # Get the namespace object that the pod belongs to
+        namespace := data.inventory.cluster["namespace"][pod.metadata.namespace]
+        # Note: can also access namespaced resources this way, e.g.
+        # data.inventory.namespace["your namespace"].rolebindings["myrolebinding"]...
+
+        # If the namespace has purpose "system", then this policy does not apply.
+        ns := namespace.metadata.labels[system_namespace_label]
+        count([system | system := system_namespace[_]; system == ns]) > 0
+      }
+
+
+      violation[{"msg": msg, "details": {}}] {
+        resource := input.review.object
+
+        # Check if any toleration has the purpose key - if this key doesn't exist, the user doesn't have this toleration.
+        purpose_toleration := resource.spec.tolerations[_]
+        purpose_toleration["key"] == system_namespace_label
+        purpose_toleration["value"] == "system"
+
+        not is_system_namespace(resource)
+
+        # Get pod name and namespace
+        pod_name := resource.metadata.name
+        namespace := resource.metadata.namespace
+        msg := sprintf("Forbidden: Pod %s in namespace %s has toleration %s:%s, which would allow it to be scheduled to a system node. Please ensure that your pod spec does not contain the specified toleration.", [pod_name, namespace, purpose_toleration["key"], purpose_toleration["value"]])
+      }
+
+      violation[{"msg": msg, "details": {}}] {
+        resource := input.review.object
+
+        # Check if any toleration has the purpose key - if this key doesn't exist, the user doesn't have this toleration.
+        purpose_toleration := resource.spec.tolerations[_]
+        purpose_toleration["key"] == classification_label
+        purpose_toleration["value"] == "protected-b"
+
+        # Check if classification label is absent or unclassified, this pod must not go to a protected-b node pool
+        not resource.metadata.labels[classification_label] == "protected-b"
+
+        not is_system_namespace(resource)
+
+
+        # Get pod name and namespace
+        pod_name := resource.metadata.name
+        namespace := resource.metadata.namespace
+        msg := sprintf("Forbidden: Pod %s in namespace %s has toleration %s:%s, which would allow it to be scheduled to a protected-b node. Please ensure that your pod spec does not contain the specified toleration.", [pod_name, namespace, purpose_toleration["key"], purpose_toleration["value"]])
+      }
+
+      violation[{"msg": msg, "details": {}}] {
+        resource := input.review.object
+
+        # Check if any toleration has the purpose key - if this key doesn't exist, the user doesn't have this toleration.
+        purpose_toleration := resource.spec.tolerations[_]
+        purpose_toleration["key"] == classification_label
+        purpose_toleration["value"] == "unclassified"
+
+        # Check if classification label is absent or unclassified, this pod must not go to a protected-b node pool
+        resource.metadata.labels[classification_label] == "protected-b"
+
+        not is_system_namespace(resource)
+
+
+        # Get pod name and namespace
+        pod_name := resource.metadata.name
+        namespace := resource.metadata.namespace
+        msg := sprintf("Forbidden: Pod %s in namespace %s has toleration %s:%s, which would allow it to be scheduled to an unclassified node. Please ensure that your pod spec does not contain the specified toleration.", [pod_name, namespace, purpose_toleration["key"], purpose_toleration["value"]])
+      }
+    target: admission.k8s.gatekeeper.sh
+status: {}

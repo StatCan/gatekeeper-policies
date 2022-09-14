@@ -1,8 +1,67 @@
 # GateKeeper Policies
 
-Policies that are to be enforced by [GateKeeper](https://github.com/open-policy-agent/gatekeeper) for the Kubernetes Platform.
+![Kubernetes Admission Controllers Diagram](https://d33wubrfki0l68.cloudfront.net/af21ecd38ec67b3d81c1b762221b4ac777fcf02d/7c60e/images/blog/2019-03-21-a-guide-to-kubernetes-admission-controllers/admission-controller-phases.png)
 
-> Note: Gatekeeper is a validating / mutating webhook that enforces CRD-based policies executed by the Open Policy Agent.
+Recall that there are two kinds of admission control webhooks in Kubernetes: (1) mutating admission webhooks, and (2) validating admission webhooks.[^1] [Gatekeeper](https://kubernetes.io/blog/2019/08/06/opa-gatekeeper-policy-and-governance-for-kubernetes/) is a **validating admission webhook** that enforces policies executed by [Open Policy Agent (OPA)](https://www.openpolicyagent.org).
+
+[^1] Diagram borrowed from [Kubernetes Admission Controllers Documentation](https://kubernetes.io/blog/2019/03/21/a-guide-to-kubernetes-admission-controllers/)
+
+This repository contains policies that are enforced by [GateKeeper](https://github.com/open-policy-agent/gatekeeper) for the Kubernetes Platform.
+
+## Prerequisites
+
+We recommend installing the following software locally to test your rego policies.
+
+- [Open Policy Agent](https://www.openpolicyagent.org/docs/v0.11.0/get-started/)
+- [Konstraint](https://github.com/plexsystems/konstraint)
+
+## How to Contribute
+
+> TODO: update with Taskfile commands once it is set up
+
+1. Create a folder in this repository with a semantically meaningful name (i.e. it should be clear from the name what the policy relates to). Additionally, you should place your policy under the broader category that it relates to (e.g. `pod-security-policy`).
+2. In your folder, create a file called `src.rego`. Structure your `src.rego` file in the way shown below; this allows `ConstraintTemplates` and `Constraints` to be automatically generated from your rego policy.
+
+```rego
+# @title <title of your policy>
+#
+# Written description of your policy
+#
+# @enforcement deny # Can be either "deny" or "dryrun"
+# @kinds <group/resource type that the constraint applies to>
+package <name of rego policy>
+
+
+violation[{"msg": msg, "details": {}}] {
+    # Business logic of rego policy goes here
+}
+```
+
+3. Create a file called `src_test.rego` that contains one or more unit tests written against the policy defined in `src.rego`. The test code should be structured as follows (roughly). Note that you would either indicate `count(results) > 0` if you *expect* a violation **or** `count(results) == 0` if you *do not expect* a violation.
+
+```rego
+package deny_user_pod_system_node
+
+# Include a short description of what this test case is verifying.
+test_short_description_of_what_this_is_testing {
+	input := {
+        # Your input spec goes here
+    }
+
+	# Evaluate the violation with the input
+	results := violation with input as input
+
+	# Expect a violation
+	count(results) > 0
+
+    # Do not expect a violation
+    count(results) == 0
+}
+```
+
+4. Run `opa test -v .` to test (in verbose mode) the rego policy in the current directory. The output will indicate whether all of the opa unit tests are passing.
+5. Run `konstraint create src.rego` to auto-generate the `template.yaml` and `constraint.yaml` files containing the `ConstraintTemplate` and `Constraint` for the current Gatekeeper policy. Note that `*constraint.yaml` is in the `.gitignore` at
+6. Run `konstraint doc src.rego --output README.md` to auto-generate documentation for the current Gatekeeper policy.
 
 ## General
 
@@ -13,7 +72,7 @@ This repo contains general policies that can be used to enforce common Kubernete
 | Container Allowed Images         | [container-allowed-images](general/container-allowed-images)                 |
 | Container Image Must Have Digest | [container-image-must-have-digest](general/container-image-must-have-digest) |
 | Container Limits                 | [container-limits](general/container-limits)                                 |
-| Deny External Users              | [deny-external-users](general/deny-external-users)                                 |
+| Deny External Users              | [deny-external-users](general/deny-external-users)                           |
 | Ingress No Hostnames             | [ingress-no-hostnames](general/ingress-no-hostnames)                         |
 | Ingress Hostnames Conflict       | [ingress-hostnames-conflict](general/ingress-hostnames-conflict)             |
 | Load Balancer No Public IPs      | [loadbalancer-no-public-ips](general/loadbalancer-no-public-ips)             |
@@ -63,6 +122,7 @@ This repo contains a set of common policies that can be used to enforce specific
 | Port Naming         | [port-naming](service-mesh/port-naming)                 |
 | Traffic Policy      | [traffic-policy](service-mesh/traffic-policy)           |
 
+
 ## Links
 
 - [Rego Playground](https://play.openpolicyagent.org/)
@@ -73,3 +133,4 @@ This repo contains a set of common policies that can be used to enforce specific
 - [Azure Policy](https://github.com/Azure/azure-policy/tree/master/built-in-references/Kubernetes)
 - [Community Policy](https://github.com/Azure/Community-Policy)
 - [Open Policy Agent](https://github.com/open-policy-agent/gatekeeper-library)
+
