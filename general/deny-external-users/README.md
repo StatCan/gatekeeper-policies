@@ -37,3 +37,9 @@ sam:
 - internal user
 - `state.aaw.statcan.gc.ca/has-sas-notebook-feature: "true"`
 - **allowed** (doesn't matter if the label is present or what it's set to)
+
+# Run the opa unit tests
+
+```bash
+cd rego && opa test . -v
+```
