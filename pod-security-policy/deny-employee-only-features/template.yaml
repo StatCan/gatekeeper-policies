@@ -23,7 +23,7 @@ spec:
           # container := input.review.object.spec.containers[_]
           # startswith(container.image, "k8scc01covidacr.azurecr.io/sas:")
           # msg := sprintf("Pod has state.aaw.statcan.gc.ca/exists-non-sas-notebook-user=%v and container uses a SAS image %v", [profileLabel, container.image])
-          msg := sprintf("Debug: this violation demonstrates this gatekeeper template is being evaluated.")
+          msg := sprint("Debug: this violation demonstrates this gatekeeper template is being evaluated.")
         }
 
         # Notebook Object
