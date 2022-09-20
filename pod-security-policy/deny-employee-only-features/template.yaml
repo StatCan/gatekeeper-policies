@@ -25,7 +25,7 @@ spec:
             input.review.object.kind == "Pod"
             container := input.review.object.spec.containers[_]
             existsSasContainerAndLabelViolation(container, profileLabelValue)
-            msg := sprintf("Pod has state.aaw.statcan.gc.ca/exists-non-sas-notebook-user=%v and container uses a SAS image %v", [profileLabelValue, container.image])
+            msg := sprintf("Pod has %s=%v and container uses a SAS image %v", [sasLabel, profileLabelValue, container.image])
         }
 
         # Notebook Object
@@ -33,7 +33,7 @@ spec:
             input.review.object.kind == "Notebook"
             container := input.review.object.spec.template.spec.containers[_]
             existsSasContainerAndLabelViolation(container, profileLabelValue)
-            msg := sprintf("Notebook has state.aaw.statcan.gc.ca/exists-non-sas-notebook-user=%v and container uses a SAS image %v", [profileLabelValue, container.image])
+            msg := sprintf("Notebook has %s=%v and container uses a SAS image %v", [sasLabel, profileLabelValue, container.image])
         }
 
         existsSasContainerAndLabelViolation(container, profileLabelValue) {
