@@ -25,7 +25,6 @@ violation[{"msg": msg}] {
 
 profileLabelViolationConditionIsTrue(profile, profileLabel) {
     profile.metadata.labels[profileLabel] == "true"
-
 }
 
 isEmployeeOrDeemedEmployee(email) {
