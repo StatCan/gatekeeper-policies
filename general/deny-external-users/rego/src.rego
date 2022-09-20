@@ -36,10 +36,3 @@ violation[{"msg": msg}] {
 isEmployee(email) {
     endswith(email, concat("@", [input.parameters.employeeDomains[_]]))
 }
-
-# TODO: should refactor this in the future to get the exception list from configmap directly.
-# isEmployee(email) {
-#     # exceptionList := yaml.unmarshal(data.inventory.namespace["statcan-system"]["v1"]["configmap"]["non-employee-exceptions"]["non-employee-exceptions.yaml"])
-#     # If the namespace has purpose "system", then this policy does not apply.
-#     count([exceptionCase | exceptionCase := input.parameters.exceptionList[_]; exceptionCase == email]) > 0
-# }
