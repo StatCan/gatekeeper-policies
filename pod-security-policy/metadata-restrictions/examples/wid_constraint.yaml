@@ -7,3 +7,9 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Namespace"]
+  parameters:
+    labels:
+      - key: finance.statcan.gc.ca/workload-id
+        allowedValues: []
+        allowedRegex:
+         - "^[0-9]{6}$"

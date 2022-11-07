@@ -1,0 +1,15 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+tests:
+  - name: six-digit-wid
+    template: ../template.yaml
+    constraint: ../examples/wid_constraint.yaml
+    cases:
+    - name: test-5-digit-wid
+      object: 5-digit-wid-ns.yaml
+      assertions:
+        - violations: yes
+    - name: test-6-digit-wid
+      object: 6-digit-wid-ns.yaml
+      assertions:
+        - violations: no

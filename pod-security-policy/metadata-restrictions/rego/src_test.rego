@@ -1,5 +1,17 @@
 package metadatarestrictions
 
+parameters = 
+{
+    "labels": 
+[
+    {
+        "key": "finance.statcan.gc.ca/workload-id",
+        "allowedRegex": ["^[0-9]{6}$"],
+        "allowedValues": []
+    }
+]
+}
+
 # Ensures that a non six-digit workload-ID flags a violation
 test_5_digit_wid {
 	request := {
@@ -26,7 +38,7 @@ test_5_digit_wid {
 		}
 	}
 
-	results := violation with input as request
+	results := violation with input as request with input.parameters as parameters
 
 	count(results) == 1
 }
@@ -57,7 +69,7 @@ test_6_digit_wid {
 		}
 	}
 
-	results := violation with input as request
+	results := violation with input as request with input.parameters as parameters
 
 	count(results) == 0
 }
