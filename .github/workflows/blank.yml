@@ -29,7 +29,7 @@ jobs:
         # install gator
         curl -L https://github.com/open-policy-agent/gatekeeper/releases/download/v${GATOR_VERSION}/gator-v${GATOR_VERSION}-linux-amd64.tar.gz -o ${GITHUB_WORKSPACE}/bin/gator.tar.gz 
         tar -xf ${GITHUB_WORKSPACE}/bin/gator.tar.gz 
-        ls -A
+        cd ${GITHUB_WORKSPACE}/bin/ && ls -R
         chmod +x ${GITHUB_WORKSPACE}/bin/gator
 
     - name: Update GitHub Path
