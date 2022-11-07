@@ -27,8 +27,9 @@ jobs:
         mkdir -p ${GITHUB_WORKSPACE}/bin/
         
         # install gator
-        curl -L https://github.com/open-policy-agent/gatekeeper/releases/download/v${GATOR_VERSION}/gator-v${GATOR_VERSION}-linux-amd64.tar.gz -o ${GITHUB_WORKSPACE}/bin/gator/gator.tar.gz && tar -xf ${GITHUB_WORKSPACE}/bin/gator/gator.tar.gz 
-        chmod +x ${GITHUB_WORKSPACE}/bin/gator/gator
+        curl -L https://github.com/open-policy-agent/gatekeeper/releases/download/v${GATOR_VERSION}/gator-v${GATOR_VERSION}-linux-amd64.tar.gz -o ${GITHUB_WORKSPACE}/bin/gator.tar.gz 
+        tar -xf ${GITHUB_WORKSPACE}/bin/gator.tar.gz 
+        chmod +x ${GITHUB_WORKSPACE}/bin/gator
 
     - name: Update GitHub Path
       run: |
