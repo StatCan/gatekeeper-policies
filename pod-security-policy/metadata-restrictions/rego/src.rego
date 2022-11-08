@@ -18,7 +18,7 @@ violation[{"msg": msg}] {
     restriction := input.parameters[kind][_]
     restriction.key == key
     count(array.concat(restriction.allowedValues,restriction.allowedRegex)) > 0
-    foundValues := [foundValues | foundValues = restriction.allowedValues[_] == val] #
+    foundValues := [foundValues | foundValues = restriction.allowedValues[_] == val]
     foundRegex := [foundRegex | foundRegex = regex.match(restriction.allowedRegex[regex], val)]
     not any(array.concat(foundValues,foundRegex))
 

@@ -2,6 +2,8 @@ apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   name: metadatarestrictions
+  annotations:
+    description: Places restrictions on the metadata of a k8s object
 spec:
   crd:
     spec:
@@ -9,24 +11,30 @@ spec:
         kind: MetadataRestrictions
       validation:
         openAPIV3Schema:
+          description: "Represents the schema of a k8s object that subscribes to the metadatarestrictions constraint template"
           type: object
           properties: 
-            annotations:
+            annotations:  
               type: array
               items:
                 type: object
                 properties:
                   key:
+                    description: "A key that maps to a value."  
                     type: string
                   fallback:
+                    description: "Represents the default value for the key if one isn't chosen."
                     type: string
                   immutable:
+                    description: "Represents the immutability of the value."
                     type: boolean
                   allowedValues:
+                    description: "Represents what values are allowed for the key."
                     type: array
                     items:
                       type: string
                   allowedRegex:
+                    description: "Represents what patterns are allowed for the value of the key."
                     type: array
                     items:
                       type: string
@@ -36,16 +44,21 @@ spec:
                 type: object
                 properties:
                   key:
+                    description: "A key that maps to a value."
                     type: string
                   fallback:
+                    description: "Represents the default value for the key if one isn't chosen."
                     type: string
                   immutable:
+                    description: "Represents the immutability of the value."
                     type: boolean
                   allowedValues:
+                    description: "Represents what values are allowed for the key."
                     type: array
                     items:
                       type: string
                   allowedRegex:
+                    description: "Represents what patterns are allowed for the value of the key."
                     type: array
                     items:
                       type: string
@@ -72,7 +85,7 @@ spec:
           restriction := input.parameters[kind][_]
           restriction.key == key
           count(array.concat(restriction.allowedValues,restriction.allowedRegex)) > 0
-          foundValues := [foundValues | foundValues = restriction.allowedValues[_] == val] #
+          foundValues := [foundValues | foundValues = restriction.allowedValues[_] == val]
           foundRegex := [foundRegex | foundRegex = regex.match(restriction.allowedRegex[regex], val)]
           not any(array.concat(foundValues,foundRegex))
 
