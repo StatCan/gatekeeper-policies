@@ -86,7 +86,7 @@ test_6_digit_wid {
 	count(results) == 0
 }
 
-# Ensures that a  six-digit workload-ID **does not** flag a violation
+# Ensures that a workload ID with "N/A" applied with a constraint that has both an allowedValue and allowedRegex does not flag a violation
 test_wid_NA {
 	request := {
 		"apiVersion": "admission.k8s.io/v1beta1",
