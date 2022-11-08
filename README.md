@@ -98,6 +98,10 @@ To take advantage of this system create the following:
 
 ### Gator
 
+[`gator`](https://open-policy-agent.github.io/gatekeeper/website/docs/gator) is a recent addition to Gatekeeper allowing for the creation of test suites that can be run locally.
+
+[`gator` test suites](https://open-policy-agent.github.io/gatekeeper/website/docs/gator#writing-test-suites) will be run automatically as part of the CI.
+
 ## Links
 
 - [Rego Playground](https://play.openpolicyagent.org/)
