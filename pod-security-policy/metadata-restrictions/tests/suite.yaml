@@ -13,3 +13,11 @@ tests:
       object: 6-digit-wid-ns.yaml
       assertions:
         - violations: no
+  - name: wid-with-acceptable-value
+    template: ../template.yaml
+    constraint: ./wid_constraint_NA_test.yaml
+    cases:
+    - name: test-na-wid
+      object: na-wid-ns.yaml
+      assertions:
+        - violations: no
