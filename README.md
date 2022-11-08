@@ -90,7 +90,7 @@ Integration tests are run as part of the GitHub Actions. These deploy policies t
 
 To take advantage of this system create the following:
 - Ensure that the `ConstraintTemplate` is in a file named `template.yaml` at the root of your policy's folder
-- Create a folder names `example` at the root of your policy's folder
+- Create a folder named `example` at the root of your policy's folder
 - In the `example` folder:
   - Create a file named `constraint.yaml` with the `CustomResource` representing an implemented policy
   - Create a file named `allowed.yaml` with a resource that should pass the policy
