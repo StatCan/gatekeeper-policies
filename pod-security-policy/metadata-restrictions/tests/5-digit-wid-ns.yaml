@@ -4,6 +4,3 @@ metadata:
   name: dev
   labels:
    finance.statcan.gc.ca/workload-id: "12345"
-    
-
-  
