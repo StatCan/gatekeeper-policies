@@ -13,8 +13,8 @@ spec:
         openAPIV3Schema:
           description: "Represents the schema of a k8s object that subscribes to the metadatarestrictions constraint template"
           type: object
-          properties: 
-            annotations:  
+          properties:
+            annotations:
               type: array
               items:
                 type: object
