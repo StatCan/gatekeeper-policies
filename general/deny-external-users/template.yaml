@@ -26,7 +26,7 @@ spec:
                 type: string
   targets:
     - target: admission.k8s.gatekeeper.sh
-      rego: |
+      rego: |-
         package denyexternalusers
 
         obj := input.review.object
@@ -54,7 +54,6 @@ spec:
 
         profileLabelViolationConditionIsTrue(profile, profileLabel) {
             profile.metadata.labels[profileLabel] == "true"
-
         }
 
         isEmployeeOrDeemedEmployee(email) {

@@ -7,10 +7,9 @@ spec:
     spec:
       names:
         kind: DenyEmployeeOnlyFeatures
-
   targets:
     - target: admission.k8s.gatekeeper.sh
-      rego: |
+      rego: |-
         package denyemployeeonlyfeatures
 
         sasLabel := "state.aaw.statcan.gc.ca/exists-non-sas-notebook-user"
