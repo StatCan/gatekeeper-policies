@@ -11,3 +11,4 @@ spec:
         allowedValues:
           - unclassified
           - protected-b
+        allowedRegex: []

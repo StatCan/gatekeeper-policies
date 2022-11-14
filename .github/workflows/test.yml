@@ -18,6 +18,7 @@ env:
   ISTIO_VERSION: 1.7.4
   OPA_VERSION: 0.34.0
   YQ_VERSION: 4.22.1
+  GATOR_VERSION: 3.10.0
 
 jobs:
   test:
@@ -50,6 +51,10 @@ jobs:
         # install yq
         curl -L https://github.com/mikefarah/yq/releases/download/v${YQ_VERSION}/yq_linux_amd64 -o ${GITHUB_WORKSPACE}/bin/yq
         chmod +x ${GITHUB_WORKSPACE}/bin/yq
+        
+        # install gator
+        curl -L https://github.com/open-policy-agent/gatekeeper/releases/download/v${GATOR_VERSION}/gator-v${GATOR_VERSION}-linux-amd64.tar.gz -o ${GITHUB_WORKSPACE}/bin/gator.tar.gz 
+        tar -zxvf ${GITHUB_WORKSPACE}/bin/gator.tar.gz && chmod +x gator && mv gator ${GITHUB_WORKSPACE}/bin/gator
 
     - name: Update GitHub Path
       run: |
@@ -71,6 +76,10 @@ jobs:
         # install gatekeeper
         kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/v${GATEKEEPER_VERSION}/deploy/gatekeeper.yaml
         kubectl -n gatekeeper-system wait --for=condition=Ready --timeout=60s pod -l control-plane=controller-manager
+
+    - name: Test ConstraintsTemplates & Constraints
+      run: |
+        gator verify ./...
 
     - name: Test ConstraintsTemplates
       run: |

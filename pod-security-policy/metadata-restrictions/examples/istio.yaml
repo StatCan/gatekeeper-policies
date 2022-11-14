@@ -23,12 +23,17 @@ spec:
       - key: sidecar.istio.io/inject
         fallback: 'true'
         allowedValues:
-          - 'true'
+          - 'true' 
+        allowedRegex: []
       - key: traffic.sidecar.istio.io/excludeOutboundPorts
         allowedValues: []
+        allowedRegex: []
       - key: traffic.sidecar.istio.io/excludeOutboundIPRanges
         allowedValues: []
+        allowedRegex: []
       - key: traffic.sidecar.istio.io/excludeInboundPorts
         allowedValues: []
+        allowedRegex: []
       - key: traffic.sidecar.istio.io/excludeInboundIPRanges
         allowedValues: []
+        allowedRegex: []
