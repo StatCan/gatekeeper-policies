@@ -1,0 +1,14 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: RestrictHostnames
+metadata:
+  name: EnforceArgoWorkflowGC
+spec:
+  match:
+    kinds:
+      - apiGroups: ["admission.k8s.io/v1beta1"]
+        kinds: ["Workflow"]
+      - apiGroups: ["admission.k8s.io/v1beta1"]
+        kinds: ["CronWorkflow"]
+  parameters:
+    # Extra information that should be appended to the error message.
+    errorMsgAdditionalDetails: "Additonal information"
