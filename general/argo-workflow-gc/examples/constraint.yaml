@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: EnforceArgoWorkflowGC
 metadata:
-  name: enforce-argo-workflow-gc
+  name: enforce-argo-workflow-garbage-collection
 spec:
   match:
     kinds:
