@@ -3,10 +3,6 @@ kind: Pod
 metadata:
   name: my-pod
 spec:
-  containers:
-  - name: main-container
-    image: allowedrepo/some-image:tag
-
   ephemeralContainers:
   - name: ephemeral-container-1
     image: notallowedrepo/some-other-image:tag
