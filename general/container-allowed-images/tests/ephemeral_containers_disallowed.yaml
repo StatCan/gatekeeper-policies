@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  ephemeralContainers:
+  - name: ephemeral-container-1
+    image: notallowedrepo/some-other-image:tag
+  - name: ephemeral-container-2
+    image: notallowedrepo/some-other-image:tag-2

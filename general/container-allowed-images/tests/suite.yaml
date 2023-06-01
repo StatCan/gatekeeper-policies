@@ -1,0 +1,19 @@
+kind: Suite
+apiVersion: test.gatekeeper.sh/v1alpha1
+tests:
+  - name: ephemeral-containers
+    template: ../template.yaml
+    constraint: constraint_test.yaml
+    cases:
+    - name: allowed-repo
+      object: ephemeral_containers_allowed.yaml
+      assertions:
+        - violations: no
+    - name: not-allowed-repo
+      object:  ephemeral_containers_disallowed.yaml
+      assertions:
+        - violations: yes
+    - name: both-allowed-and-not-allowed-repos
+      object: ephemeral_containers_mixed_repo.yaml
+      assertions:
+        - violations: yes
