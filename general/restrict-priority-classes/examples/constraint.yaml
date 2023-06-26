@@ -14,10 +14,10 @@ spec:
       matchExpressions:
       - key: project.statcan.gc.ca/purpose
         operator: In
-        value: solution
+        values: ["solution"]
       - key: project.statcan.gc.ca/priority
         operator: In
-        value: critical
+        values: ["critical"]
   parameters:
     # The names of the priority classes that can be used.
     priorityClassNames:
@@ -40,10 +40,10 @@ spec:
       matchExpressions:
       - key: project.statcan.gc.ca/purpose
         operator: In
-        value: solution
+        values: ["solution"]
       - key: project.statcan.gc.ca/priority
         operator: In
-        value: medium
+        values: ["medium"]
   parameters:
     # The names of the priority classes that can be used.
     priorityClassNames:
