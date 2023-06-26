@@ -10,5 +10,5 @@ violation[{"msg": msg}] {
 	# If empty, is in violation.
 	priority_class_names & {priority_class_name} == set()
 
-	msg := sprintf("pod %s is using an unapproved priority class %q. Available prority classes are %v.", [input.review.object.metadata.name, priority_class_name, priority_class_names])
+	msg := sprintf("pod %s is using an unapproved priority class %q. Available priority classes are %v.", [input.review.object.metadata.name, priority_class_name, priority_class_names])
 }
