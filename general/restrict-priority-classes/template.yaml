@@ -1,7 +1,7 @@
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
-  name: restrict-priority-classes
+  name: restrictpriorityclasses
   annotations:
     kubernetes.io/description: Restrict which priority classes can be used by a namespace.
 spec:

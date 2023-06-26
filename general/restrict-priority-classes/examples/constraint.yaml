@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: RestrictPriorityClasses
 metadata:
-  name: restrict-priority-classes-solutions
+  name: restrict-priority-classes-solution-critical
   annotations:
     kubernetes.io/description: |
       Restricts the types of priority classes that can be used by solution builders of critical priority.
@@ -27,7 +27,7 @@ spec:
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: RestrictPriorityClasses
 metadata:
-  name: restrict-priority-classes-solutions
+  name: restrict-priority-classes-solution-medium
   annotations:
     kubernetes.io/description: |
       Restricts the types of priority classes that can be used by solution builders of medium priority.
