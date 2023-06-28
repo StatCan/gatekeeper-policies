@@ -21,3 +21,13 @@ test_unallowed_names {
 	# A result means there is a violation.
 	result != set()
 }
+
+test_no_names {
+	priority_class_name := ""
+	pod_name := "test-pod"
+
+	result := violation with input.parameters.priorityClassNames as names with input.review.object.spec.priorityClassName as priority_class_name with input.review.object.metadata.name as pod_name
+
+	# A result means there is a violation.
+	result != set()
+}
