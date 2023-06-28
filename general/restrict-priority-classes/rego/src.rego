@@ -1,3 +1,5 @@
+# This policy restricts the priority classes that
+# can be used by Pods.
 package restrictpriorityclasses
 
 # Create a set of the priority class names
