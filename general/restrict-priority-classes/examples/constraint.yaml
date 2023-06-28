@@ -1,0 +1,50 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: RestrictPriorityClasses
+metadata:
+  name: restrict-priority-classes-solution-critical
+  annotations:
+    kubernetes.io/description: |
+      Restricts the types of priority classes that can be used by solution builders of critical priority.
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+      - key: project.statcan.gc.ca/purpose
+        operator: In
+        values: ["solution"]
+      - key: project.statcan.gc.ca/priority
+        operator: In
+        values: ["critical"]
+  parameters:
+    # The names of the priority classes that can be used.
+    priorityClassNames:
+      - 'business-value-medium'
+      - 'business-value-critical'
+# ---
+# apiVersion: constraints.gatekeeper.sh/v1beta1
+# kind: RestrictPriorityClasses
+# metadata:
+#   name: restrict-priority-classes-solution-medium
+#   annotations:
+#     kubernetes.io/description: |
+#       Restricts the types of priority classes that can be used by solution builders of medium priority.
+# spec:
+#   match:
+#     kinds:
+#       - apiGroups: [""]
+#         kinds: ["Pod"]
+#     namespaceSelector:
+#       matchExpressions:
+#       - key: project.statcan.gc.ca/purpose
+#         operator: In
+#         values: ["solution"]
+#       - key: project.statcan.gc.ca/priority
+#         operator: In
+#         values: ["medium"]
+#   parameters:
+#     # The names of the priority classes that can be used.
+#     priorityClassNames:
+#       - 'business-value-medium'

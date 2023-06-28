@@ -1,0 +1,38 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: restrictpriorityclasses
+  annotations:
+    kubernetes.io/description: Restrict which priority classes can be used by a namespace.
+spec:
+  crd:
+    spec:
+      names:
+        kind: RestrictPriorityClasses
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            priorityClassNames:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |-
+        # This policy restricts the priority classes that
+        # can be used by Pods.
+        package restrictpriorityclasses
+
+        # Create a set of the priority class names
+        priority_class_names := {name | name := input.parameters.priorityClassNames[_]}
+
+        violation[{"msg": msg}] {
+        	priority_class_name := input.review.object.spec.priorityClassName
+
+        	# Check intersection of sets.
+        	# If empty, is in violation.
+        	priority_class_names & {priority_class_name} == set()
+
+        	msg := sprintf("pod %s is using an unapproved priority class %q. Available priority classes are %v.", [input.review.object.metadata.name, priority_class_name, priority_class_names])
+        }
