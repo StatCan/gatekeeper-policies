@@ -34,7 +34,7 @@ spec:
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"]
 
-          not data.inventory.namespace[input.review.namespace]["v1"]["Node"][input.review.name]
+          not data.inventory.name
           msg := sprintf("blocking <%v>, cannot verify labels on node <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
         }
 
