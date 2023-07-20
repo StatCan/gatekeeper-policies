@@ -11,7 +11,7 @@ spec:
         openAPIV3Schema:
           type: object
           properties:
-            podLabels:
+            nodeLabels:
               type: array
               items:
                 type: object
@@ -29,23 +29,23 @@ spec:
           a == b
         }
 
-        # If we can't load the pod metadata,
+        # If we can't load the node metadata,
         # then we need to reject the request since we can't confirm.
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"]
 
-          not data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
-          msg := sprintf("blocking <%v>, cannot verify labels on pod <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
+          not data.inventory.namespace[input.review.namespace]["v1"]["Node"][input.review.name]
+          msg := sprintf("blocking <%v>, cannot verify labels on node <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
         }
 
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"]
 
-          pod := data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
+          node := data.inventory.namespace[input.review.namespace]["v1"]["Node"][input.review.name]
 
-          label := input.parameters.podLabels[_]
-          matched := [found | found = pod.metadata.labels[label.key] == label.value; found]
-          count(matched) == count(input.parameters.podLabels)
+          label := input.parameters.nodeLabels[_]
+          matched := [found | found = node.metadata.labels[label.key] == label.value; found]
+          count(matched) == count(input.parameters.nodeLabels)
 
           msg := sprintf("forbidden action <%v> on <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
         }
