@@ -8,6 +8,9 @@ spec:
     syncOnly:
       - group: ""
         version: "v1"
+        kind: "Node"
+      - group: ""
+        version: "v1"
         kind: "Namespace"
       - group: ""
         version: "v1"
