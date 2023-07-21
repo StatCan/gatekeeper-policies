@@ -42,7 +42,7 @@ spec:
           subResources := ["attach", "exec"]
 
           node := data.inventory
-          sprintf("node: ", [node])
+          sprintf("node: %v", [node])
           label := input.parameters.nodeLabels[_]
 
           matched := [found | found = node.metadata.labels[label.key] == label.value; found]
