@@ -41,9 +41,10 @@ spec:
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"]
 
-          node := data.inventory.namespace[input.review.namespace]["v1"]["Node"][input.review.name]
-
+          node := data.inventory
+          sprintf("node: ", [node])
           label := input.parameters.nodeLabels[_]
+
           matched := [found | found = node.metadata.labels[label.key] == label.value; found]
           count(matched) == count(input.parameters.nodeLabels)
 
