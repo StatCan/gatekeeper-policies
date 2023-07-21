@@ -34,7 +34,7 @@ spec:
         # If we can't load the node metadata,
         # then we need to reject the request since we can't confirm.
         violation[{"msg": msg}] {
-          #subResources := ["attach", "exec"]
+          subResources := ["attach", "exec"]
 
           data.inventory.metadata.labels.agentpool != "userpb"
           msg := sprintf("node_name %s.", [node_name])
