@@ -25,6 +25,8 @@ spec:
       rego: |
         package denyextraction
 
+        import data.kubernetes.node_labels
+        
         same(a, b) {
           a == b
         }
@@ -32,10 +34,11 @@ spec:
         # If we can't load the node metadata,
         # then we need to reject the request since we can't confirm.
         violation[{"msg": msg}] {
-          subResources := ["attach", "exec"]
+          #subResources := ["attach", "exec"]
 
-          not data.inventory.metadata.labels.agentpool
-          msg := sprintf("blocking <%v>, cannot verify labels on node <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
+          data.inventory.metadata.labels.agentpool != "userpb"
+          msg := sprintf("node_name %s.", [node_name])
+          #msg := sprintf("blocking <%v>, cannot verify labels on node <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
         }
 
         violation[{"msg": msg}] {
