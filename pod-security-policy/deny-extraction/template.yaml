@@ -23,7 +23,7 @@ spec:
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
-package denyextraction
+        package denyextraction
         
         # What does this do?
         same(a, b) {
