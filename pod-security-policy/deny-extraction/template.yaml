@@ -35,7 +35,7 @@ spec:
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"] # Do I need to change this because we are looking at Nodes instead of Pods?
           
-          not data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
+          data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
 
           #data.inventory.cluster["v1"].Node
           msg := sprintf("Node: %v", [data.inventory.cluster["v1"].Node])
