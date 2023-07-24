@@ -35,7 +35,7 @@ spec:
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"] # Do I need to change this because we are looking at Nodes instead of Pods?
 
-          not data.inventory.cluster["v1"].Node
+          data.inventory.cluster["v1"].Node
           msg := sprintf("Node: %v", [data.inventory.cluster["v1"].Node])
           #msg := sprintf("blocking <%v>, cannot verify labels on node <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
         }
