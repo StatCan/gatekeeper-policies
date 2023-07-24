@@ -11,7 +11,7 @@ spec:
         openAPIV3Schema:
           type: object
           properties:
-            nodeLabels:
+            podLabels:
               type: array
               items:
                 type: object
