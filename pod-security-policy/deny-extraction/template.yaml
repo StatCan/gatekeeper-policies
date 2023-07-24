@@ -33,10 +33,7 @@ spec:
         # If we can't load the node metadata,
         # then we need to reject the request since we can't confirm.
         violation[{"msg": msg}] {
-          subResources := ["attach", "exec"]
-
-          not data.inventory.cluster.v1.Node["aks-userpb-67222117-vmss000002"].metadata.labels
-          
+          subResources := ["attach", "exec"]          
           msg := sprintf("Node: %v", [data.inventory.cluster.v1.Node["aks-userpb-67222117-vmss000002"].metadata.labels])
         }
 
