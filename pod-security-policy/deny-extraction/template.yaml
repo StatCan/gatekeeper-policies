@@ -40,12 +40,11 @@ spec:
         violation[{"msg": msg}] {
           subResources := ["attach", "exec"]
 
-          node := data.inventory
-          sprintf("node: %v", [node])
-          label := input.parameters.nodeLabels[_]
+          pod := data.inventory.namespace[input.review.namespace]["v1"]["Pod"][input.review.name]
 
-          matched := [found | found = node.metadata.labels[label.key] == label.value; found]
-          count(matched) == count(input.parameters.nodeLabels)
+          label := input.parameters.podLabels[_]
+          matched := [found | found = pod.metadata.labels[label.key] == label.value; found]
+          count(matched) == count(input.parameters.podLabels)
 
           msg := sprintf("forbidden action <%v> on <%v/%v>", [input.review.requestSubResource, input.review.namespace, input.review.name])
         }
