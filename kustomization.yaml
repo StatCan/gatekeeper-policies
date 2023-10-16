@@ -30,5 +30,5 @@ bases:
 # files that kustomize reads, modifies and emits as a
 # YAML string, with resources separated by document
 # markers ("---").
-resources:
-  - gatekeeper-opa-sync.yaml
+# resources:
+#   - gatekeeper-opa-sync.yaml
